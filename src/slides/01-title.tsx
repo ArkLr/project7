@@ -7,32 +7,32 @@ import { Reveal } from "@/components/deck";
 
 export default function TitleSlide() {
 	return (
-		<div className="relative grid h-full grid-cols-[1.1fr_1fr] items-center gap-8 px-24">
+		<div className="relative grid h-full w-full grid-cols-[1fr_auto] items-center gap-4 pl-20">
 			{/* Left: title block */}
 			<div className="flex flex-col items-start gap-7">
 				<Reveal each={false} effect="fade-down" delay={0.1}>
 					<Badge>Cloud &amp; Parallel Architectures</Badge>
 				</Reveal>
 
-				<h1 className="font-display font-semibold leading-[1.02] tracking-tight">
+				<h1 className="font-display font-semibold tracking-tight">
 					{/* Gradient text can't be split per letter, so this line wipes in as a whole. */}
 					<motion.span
-						className="block pb-2 text-7xl text-gradient"
+						className="block pb-2 text-4xl leading-[1.05] text-balance text-gradient md:text-6xl lg:text-7xl"
 						initial={{ clipPath: "inset(0 100% 0 0)", y: 16, opacity: 0 }}
 						animate={{ clipPath: "inset(0 0% 0 0)", y: 0, opacity: 1 }}
 						transition={{ delay: 0.25, duration: 1, ease: [0.22, 1, 0.36, 1] }}
 					>
-						Facebook &amp; Amazon
+						Inside the Warehouse-Scale Computer
 					</motion.span>
 					<SplitText
-						text="Dedicated Hardware Architectures"
+						text="Dedicated Hardware and Parallel Architectures at Meta and Amazon"
 						tag="span"
 						trigger="load"
 						effect="rise"
 						splitType="words"
 						delay={120}
 						textAlign="left"
-						className="block text-5xl text-fg"
+						className="mt-4 block max-w-3xl text-lg font-normal leading-snug tracking-normal text-fg md:text-2xl"
 					/>
 				</h1>
 
@@ -52,14 +52,13 @@ export default function TitleSlide() {
 				/>
 			</div>
 
-			{/* Right: globe */}
 			<Reveal
 				each={false}
 				effect="scale"
 				delay={0.3}
-				className="relative mx-auto w-full max-w-530"
+				className="mr-[calc(-1*var(--bleed-x,0px))] justify-self-end"
 			>
-				<GlobeCdn className="w-xl" />
+				<GlobeCdn className="w-180" />
 			</Reveal>
 		</div>
 	);

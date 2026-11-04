@@ -17,7 +17,7 @@ function Thumbnail({ index }: { index: number }) {
   const scale = width / deckConfig.width
 
   return (
-    <div ref={ref} className="relative aspect-video w-full overflow-hidden rounded-xl bg-bg">
+    <div ref={ref} className="relative aspect-video w-full overflow-hidden rounded-xl bg-bg [--bleed-x:0px] [--bleed-y:0px]">
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,color-mix(in_oklab,var(--accent)_14%,transparent),transparent_60%)]" />
       {width > 0 && (
         <div
