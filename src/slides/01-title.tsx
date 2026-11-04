@@ -28,7 +28,7 @@ export default function TitleSlide() {
 						text="Dedicated Hardware Architectures"
 						tag="span"
 						trigger="load"
-						effect="blur"
+						effect="rise"
 						splitType="words"
 						delay={120}
 						textAlign="left"
@@ -59,10 +59,6 @@ export default function TitleSlide() {
 				delay={0.3}
 				className="relative mx-auto w-full max-w-[520px]"
 			>
-				<div
-					aria-hidden
-					className="absolute inset-[12%] rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--accent)_22%,transparent),transparent_70%)] blur-2xl"
-				/>
 				<GlobeCdn />
 			</Reveal>
 		</div>

@@ -10,7 +10,7 @@
   --bg: #ffffff;
   --fg: #140a0b;
   --muted: #6b5d5f;
-  --surface: rgb(255 255 255 / 0.75);
+  --surface: #ffffff;
   --surface-strong: #ffffff;
   --border: rgb(30 10 12 / 0.1);
   --accent: #e0141e;
@@ -23,7 +23,7 @@
   --bg: #0b0708;
   --fg: #fbf7f7;
   --muted: #a8999b;
-  --surface: rgb(32 20 22 / 0.65);
+  --surface: #181112;
   --surface-strong: #160e0f;
   --border: rgb(255 255 255 / 0.09);
   --accent: #ef3b42;

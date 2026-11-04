@@ -18,7 +18,7 @@ export function Card({ children, className }: CardProps) {
     <div
       onMouseMove={onMove}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-soft backdrop-blur-md',
+        'group relative overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-soft',
         'transition-[transform,border-color,box-shadow] duration-300 ease-out',
         'hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--accent)_45%,transparent)]',
         className,

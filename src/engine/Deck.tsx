@@ -26,7 +26,7 @@ export function Deck() {
       ref={ref}
       className="absolute inset-0 touch-pan-y"
       aria-live="polite"
-      animate={overview ? { scale: 0.94, opacity: 0.35, filter: 'blur(8px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
+      animate={overview ? { scale: 0.94, opacity: 0.35 } : { scale: 1, opacity: 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       <Stage>

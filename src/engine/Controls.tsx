@@ -24,7 +24,7 @@ export function Controls({ idle }: { idle: boolean }) {
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: hidden ? 16 : 0, opacity: hidden ? 0 : 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface p-1.5 shadow-soft backdrop-blur-xl"
+        className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface p-1.5 shadow-soft"
       >
         <IconButton label="Previous" shortcut="←" onClick={prev} disabled={isFirst || overview}>
           <ChevronLeft className="size-5" />
