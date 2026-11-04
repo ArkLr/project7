@@ -1,4 +1,4 @@
-# Cloud and Parallel Architectures — slide deck
+# Cloud and Parallel Architectures slide deck
 
 A presentation engine built with Vite, React, TypeScript and Tailwind v4. Each slide is a React component.
 
