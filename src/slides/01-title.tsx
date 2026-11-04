@@ -7,7 +7,7 @@ import { Reveal } from "@/components/deck";
 
 export default function TitleSlide() {
 	return (
-		<div className="grid h-full grid-cols-[1.1fr_1fr] items-center gap-8 px-24">
+		<div className="relative grid h-full grid-cols-[1.1fr_1fr] items-center gap-8 px-24">
 			{/* Left: title block */}
 			<div className="flex flex-col items-start gap-7">
 				<Reveal each={false} effect="fade-down" delay={0.1}>
@@ -52,12 +52,12 @@ export default function TitleSlide() {
 				/>
 			</div>
 
-			{/* Right: globe */}
+			{/* Right: large globe bleeding off the right edge */}
 			<Reveal
 				each={false}
-				effect="scale"
+				effect="fade-left"
 				delay={0.3}
-				className="relative mx-auto w-full max-w-[520px]"
+				className="absolute top-1/2 -right-[300px] w-[880px] -translate-y-1/2"
 			>
 				<GlobeCdn />
 			</Reveal>

@@ -1,4 +1,5 @@
 import type { TargetAndTransition, Variants } from 'motion/react'
+import { deckConfig } from '@/deck.config'
 import type { Direction } from '@/store/deck'
 
 /** Slide-to-slide transitions. Set per slide with `transition` in `src/slides/index.ts`. */
@@ -18,6 +19,12 @@ interface Preset {
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const exitEase: [number, number, number, number] = [0.4, 0, 0.6, 1]
 
+const vertical = deckConfig.orientation === 'vertical'
+/** Translate along the deck's axis (`slide`). */
+const move = (v: string): TargetAndTransition => (vertical ? { y: v } : { x: v })
+/** Rotate around the axis perpendicular to travel (`flip`); sign keeps "forward" looking forward. */
+const turn = (deg: number): TargetAndTransition => (vertical ? { rotateX: -deg } : { rotateY: deg })
+
 const presets: Record<TransitionName, (d: Direction) => Preset> = {
   fade: () => ({
     initial: { opacity: 0 },
@@ -25,9 +32,9 @@ const presets: Record<TransitionName, (d: Direction) => Preset> = {
     exit: { opacity: 0, transition: { duration: 0.35, ease: exitEase } },
   }),
   slide: (d) => ({
-    initial: { x: `${d * 100}%`, opacity: 0.4 },
-    animate: { x: '0%', opacity: 1, transition: { type: 'spring', stiffness: 220, damping: 30 } },
-    exit: { x: `${-d * 40}%`, opacity: 0, transition: { duration: 0.45, ease: exitEase } },
+    initial: { ...move(`${d * 100}%`), opacity: 0.4 },
+    animate: { ...move('0%'), opacity: 1, transition: { type: 'spring', stiffness: 220, damping: 30 } },
+    exit: { ...move(`${-d * 40}%`), opacity: 0, transition: { duration: 0.45, ease: exitEase } },
   }),
   zoom: (d) => ({
     initial: { scale: d > 0 ? 0.82 : 1.18, opacity: 0 },
@@ -40,9 +47,9 @@ const presets: Record<TransitionName, (d: Direction) => Preset> = {
     exit: { filter: 'blur(24px)', opacity: 0, scale: 0.98, transition: { duration: 0.4, ease: exitEase } },
   }),
   flip: (d) => ({
-    initial: { rotateY: d * 75, opacity: 0, scale: 0.9 },
-    animate: { rotateY: 0, opacity: 1, scale: 1, transition: { duration: 0.75, ease } },
-    exit: { rotateY: -d * 75, opacity: 0, scale: 0.9, transition: { duration: 0.45, ease: exitEase } },
+    initial: { ...turn(d * 75), opacity: 0, scale: 0.9 },
+    animate: { ...turn(0), opacity: 1, scale: 1, transition: { duration: 0.75, ease } },
+    exit: { ...turn(-d * 75), opacity: 0, scale: 0.9, transition: { duration: 0.45, ease: exitEase } },
   }),
   none: () => ({
     initial: { opacity: 1 },

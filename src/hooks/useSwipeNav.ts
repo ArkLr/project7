@@ -5,13 +5,15 @@ interface SwipeNavOptions {
   enabled?: boolean
   /** Advance on click (left 30% of the element goes back). */
   click?: boolean
+  /** Swipe axis: up/down (`vertical`) or left/right. */
+  orientation?: 'vertical' | 'horizontal'
   threshold?: number
 }
 
 const INTERACTIVE = 'a, button, input, textarea, select, label, summary, [role="button"], [data-no-nav]'
 
 /** Swipe (touch/pen) and click navigation on an element. */
-export function useSwipeNav(ref: RefObject<HTMLElement | null>, { enabled = true, click = true, threshold = 50 }: SwipeNavOptions = {}) {
+export function useSwipeNav(ref: RefObject<HTMLElement | null>, { enabled = true, click = true, threshold = 50, orientation = 'horizontal' }: SwipeNavOptions = {}) {
   useEffect(() => {
     const el = ref.current
     if (!el || !enabled) return
@@ -31,8 +33,10 @@ export function useSwipeNav(ref: RefObject<HTMLElement | null>, { enabled = true
       start = null
       const { next, prev } = useDeckStore.getState()
 
-      if (type !== 'mouse' && Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy) * 1.2) {
-        if (dx < 0) next()
+      // Main axis = direction of travel between slides; swiping against it (up / left) goes forward.
+      const [main, cross] = orientation === 'vertical' ? [dy, dx] : [dx, dy]
+      if (type !== 'mouse' && Math.abs(main) > threshold && Math.abs(main) > Math.abs(cross) * 1.2) {
+        if (main < 0) next()
         else prev()
         return
       }
@@ -58,5 +62,5 @@ export function useSwipeNav(ref: RefObject<HTMLElement | null>, { enabled = true
       el.removeEventListener('pointerup', onUp)
       el.removeEventListener('pointercancel', onCancel)
     }
-  }, [ref, enabled, click, threshold])
+  }, [ref, enabled, click, threshold, orientation])
 }

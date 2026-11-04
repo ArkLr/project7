@@ -1,11 +1,16 @@
-import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, Minimize } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, LayoutGrid, Maximize, Minimize } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useState } from 'react'
+import { deckConfig } from '@/deck.config'
 import { useFullscreen } from '@/hooks/useFullscreen'
 import { useSlides } from '@/hooks/useSlides'
 import { IconButton } from './IconButton'
 import { SlideCounter } from './SlideCounter'
 import { ThemeToggle } from './ThemeToggle'
+
+const vertical = deckConfig.orientation === 'vertical'
+const PrevIcon = vertical ? ChevronUp : ChevronLeft
+const NextIcon = vertical ? ChevronDown : ChevronRight
 
 /** Floating control pill; fades away while the pointer is idle. */
 export function Controls({ idle }: { idle: boolean }) {
@@ -26,12 +31,12 @@ export function Controls({ idle }: { idle: boolean }) {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface p-1.5 shadow-soft"
       >
-        <IconButton label="Previous" shortcut="←" onClick={prev} disabled={isFirst || overview}>
-          <ChevronLeft className="size-5" />
+        <IconButton label="Previous" shortcut={vertical ? '↑' : '←'} onClick={prev} disabled={isFirst || overview}>
+          <PrevIcon className="size-5" />
         </IconButton>
         <SlideCounter />
-        <IconButton label="Next" shortcut="→" onClick={next} disabled={isLast || overview}>
-          <ChevronRight className="size-5" />
+        <IconButton label="Next" shortcut={vertical ? '↓' : '→'} onClick={next} disabled={isLast || overview}>
+          <NextIcon className="size-5" />
         </IconButton>
 
         <span className="mx-1 h-6 w-px bg-border" />

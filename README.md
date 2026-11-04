@@ -49,14 +49,14 @@ Set `transition` on the slide's entry in `src/slides/index.ts`:
 | value   | effect                               |
 | ------- | ------------------------------------ |
 | `fade`  | cross-fade (default)                 |
-| `slide` | horizontal push, follows direction   |
+| `slide` | push along the deck's axis (up/down) |
 | `zoom`  | scale in/out                         |
 | `blur`  | blur + fade                          |
-| `flip`  | 3D rotate                            |
+| `flip`  | 3D turn over the horizontal axis     |
 | `none`  | instant cut                          |
 
 The entering slide's transition is used going forward. Going back, the leaving slide's transition plays in reverse.
-To change the fallback, edit `defaultTransition` in `src/deck.config.ts`. To tweak timings or add a new transition, edit `src/engine/transitions.ts`.
+Slides move **vertically** (↓ / ↑, swipe up/down); set `orientation: 'horizontal'` in `src/deck.config.ts` for left/right. To change the fallback transition, edit `defaultTransition` there too. To tweak timings or add a new transition, edit `src/engine/transitions.ts`.
 
 ## Authoring API (`@/components/deck`)
 
@@ -72,7 +72,7 @@ Effects: `fade`, `fade-up`, `fade-down`, `fade-left`, `fade-right`, `scale`, `bl
 Slides are laid out on a fixed **1280×720** canvas that scales to fit any screen. Size things for that canvas.
 
 Ready-made extras:
-- `@/components/ui`: `Heading` (with a `gradient` option), `Card` (hover lift and a spotlight that follows the cursor), `Badge`, `GlobeCdn` (the "▲ CDN" globe from the open-source [cobe](https://github.com/shuding/cobe) showcase: spinning pyramid markers, live traffic labels, red & white; used on the title slide and draggable).
+- `@/components/ui`: `Heading` (with a `gradient` option), `Card` (hover lift and a spotlight that follows the cursor), `Badge`, `GlobeCdn` (dark dotted [cobe](https://github.com/shuding/cobe) globe with a red/white rim light, red location dots and labels; drag to spin and tilt). Change the locations by passing `locations` / `links`, or edit the defaults in `src/components/ui/cobe-globe-cdn.tsx`.
 - `@/components/wensity`: `TextBlurReveal`, `TextShimmer`. Add more with `pnpm dlx wensity add <slug>` (`pnpm dlx wensity list` shows what's available).
 - `@/components/reactbits/SplitText`: inside slides, use `trigger="load"` because slides don't scroll into view. Add more with `pnpm dlx shadcn@latest add @react-bits/<Name>-JS-CSS`.
 - Icons come from `lucide-react`.
@@ -100,7 +100,7 @@ The deck follows the system theme until you toggle it. Your choice is then saved
 
 ## Configuration (`src/deck.config.ts`)
 
-`title`, `subtitle`, canvas `width`/`height`, `defaultTransition`, `clickToNavigate`, `idleTimeout`.
+`title`, `subtitle`, canvas `width`/`height`, `orientation`, `defaultTransition`, `clickToNavigate`, `idleTimeout`.
 
 ## Project structure
 

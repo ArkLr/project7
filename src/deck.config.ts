@@ -9,6 +9,12 @@ export const deckConfig = {
   width: 1280,
   height: 720,
 
+  /**
+   * Axis slides move along. `vertical`: the `slide` transition pushes up/down,
+   * `flip` turns over the horizontal axis, and touch swipes are up/down.
+   */
+  orientation: 'vertical' as 'vertical' | 'horizontal',
+
   /** Used when a slide entry has no `transition`. */
   defaultTransition: 'fade' as TransitionName,
 
