@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* `dark:` follows the data-theme attribute (also used by Wensity components). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ───────────── Theme tokens ───────────── */
+:root,
+[data-theme="light"] {
+  --bg: #ffffff;
+  --fg: #140a0b;
+  --muted: #6b5d5f;
+  --surface: rgb(255 255 255 / 0.75);
+  --surface-strong: #ffffff;
+  --border: rgb(30 10 12 / 0.1);
+  --accent: #e0141e;
+  --accent-2: #9f1239;
+  --accent-fg: #ffffff;
+  --shadow: 0 12px 40px -14px rgb(120 10 20 / 0.22);
+}
+
+[data-theme="dark"] {
+  --bg: #0b0708;
+  --fg: #fbf7f7;
+  --muted: #a8999b;
+  --surface: rgb(32 20 22 / 0.65);
+  --surface-strong: #160e0f;
+  --border: rgb(255 255 255 / 0.09);
+  --accent: #ef3b42;
+  --accent-2: #ffd5d6;
+  --accent-fg: #ffffff;
+  --shadow: 0 12px 40px -14px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-fg: var(--accent-fg);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --shadow-soft: var(--shadow);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 32%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility text-gradient {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ───────────── Circular theme reveal (View Transitions API) ───────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* ───────────── Globe CDN overlays (from the cobe "▲ CDN" showcase) ───────────── */
+.cdn-marker,
+.cdn-arc-label {
+  position: absolute;
+  bottom: anchor(top);
+  left: anchor(center);
+  translate: -50% 0;
+  pointer-events: none;
+  transition: opacity 0.3s, filter 0.3s;
+}
+.cdn-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.cdn-pyramid {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cdn-pyramid-spin 4s linear infinite;
+}
+.cdn-pyramid-face {
+  position: absolute;
+  left: -0.5px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-left: 6.5px solid transparent;
+  border-right: 6.5px solid transparent;
+  border-bottom: 13px solid #dc2626;
+  transform-origin: center bottom;
+}
+.cdn-pyramid-face:nth-child(1) { transform: rotateY(0deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #991b1b; }
+.cdn-pyramid-face:nth-child(2) { transform: rotateY(120deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #dc2626; }
+.cdn-pyramid-face:nth-child(3) { transform: rotateY(240deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #f87171; }
+.cdn-pyramid-face:nth-child(4) { transform: rotateX(-90deg) rotateZ(60deg) translateY(4px); border-bottom-color: #7f1d1d; }
+.cdn-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #c8101a;
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgb(120 10 20 / 0.25);
+}
+.cdn-arc-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: #fff;
+  background: #dc2626;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@keyframes cdn-pyramid-spin {
+  from { transform: rotateX(20deg) rotateY(0deg); }
+  to { transform: rotateX(20deg) rotateY(360deg); }
+}
+@supports not (anchor-name: --test) {
+  .cdn-marker,
+  .cdn-arc-label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cdn-pyramid { animation: none; }
+}
