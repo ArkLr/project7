@@ -52,14 +52,14 @@ export default function TitleSlide() {
 				/>
 			</div>
 
-			{/* Right: large globe bleeding off the right edge */}
+			{/* Right: globe */}
 			<Reveal
 				each={false}
-				effect="fade-left"
+				effect="scale"
 				delay={0.3}
-				className="absolute top-1/2 -right-[300px] w-[880px] -translate-y-1/2"
+				className="relative mx-auto w-full max-w-530"
 			>
-				<GlobeCdn />
+				<GlobeCdn className="w-xl" />
 			</Reveal>
 		</div>
 	);

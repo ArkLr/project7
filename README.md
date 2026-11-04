@@ -72,7 +72,7 @@ Effects: `fade`, `fade-up`, `fade-down`, `fade-left`, `fade-right`, `scale`, `bl
 Slides are laid out on a fixed **1280×720** canvas that scales to fit any screen. Size things for that canvas.
 
 Ready-made extras:
-- `@/components/ui`: `Heading` (with a `gradient` option), `Card` (hover lift and a spotlight that follows the cursor), `Badge`, `GlobeCdn` (dark dotted [cobe](https://github.com/shuding/cobe) globe with a red/white rim light, red location dots and labels; drag to spin and tilt). Change the locations by passing `locations` / `links`, or edit the defaults in `src/components/ui/cobe-globe-cdn.tsx`.
+- `@/components/ui`: `Heading` (with a `gradient` option), `Card` (hover lift and a spotlight that follows the cursor), `Badge`, `GlobeCdn` (the "▲ CDN" globe from the open-source [cobe](https://github.com/shuding/cobe) showcase: spinning pyramid markers, live traffic labels, red & white; used on the title slide and draggable). Edit `REGIONS` / `LINKS` at the top of `src/components/ui/cobe-globe-cdn.tsx` to change it.
 - `@/components/wensity`: `TextBlurReveal`, `TextShimmer`. Add more with `pnpm dlx wensity add <slug>` (`pnpm dlx wensity list` shows what's available).
 - `@/components/reactbits/SplitText`: inside slides, use `trigger="load"` because slides don't scroll into view. Add more with `pnpm dlx shadcn@latest add @react-bits/<Name>-JS-CSS`.
 - Icons come from `lucide-react`.

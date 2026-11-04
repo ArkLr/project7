@@ -1,99 +1,76 @@
 "use client"
 
 /**
- * GlobeCdn: a cobe WebGL globe (github.com/shuding/cobe, MIT © Shu Ding) styled as a dark
- * dotted planet with a red/white rim light, small red location dots and dark labels.
- *
- * - Labels follow the globe via CSS anchor positioning: cobe v2 creates an anchor per
- *   marker/arc and sets `--cobe-visible-<id>` while it faces the viewer.
- * - Drag horizontally to spin, vertically to tilt; it keeps rotating slowly on its own.
+ * GlobeCdn: the "▲ CDN" showcase from the cobe website (github.com/shuding/cobe,
+ * MIT © Shu Ding), adapted for this deck:
+ *   - spinning 3D pyramid markers with region labels
+ *   - live-updating traffic labels on the arcs
+ *   - labels fade/blur out as they rotate behind the globe
+ * Labels follow the globe via CSS anchor positioning (cobe v2 creates an anchor per
+ * marker/arc and sets `--cobe-visible-<id>` while it faces the viewer).
+ * Colours: red & white. Drag to spin.
  */
 
 import createGlobe, { type Arc, type COBEOptions, type Globe, type Marker } from "cobe"
 import { useReducedMotion } from "motion/react"
-import { useEffect, useId, useRef, type CSSProperties } from "react"
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 import { useThemeStore, type Theme } from "@/store/theme"
 
 type LatLng = [number, number]
 
-export interface GlobeLocation {
-  id: string
-  location: LatLng
-  label: string
-}
-
-export interface GlobeLink {
-  id: string
-  from: LatLng
-  to: LatLng
-}
-
-/** Major cloud data-center regions. */
-const defaultLocations: GlobeLocation[] = [
-  { id: "iad", location: [38.95, -77.45], label: "N. Virginia" },
-  { id: "pdx", location: [45.6, -121.2], label: "Oregon" },
-  { id: "dub", location: [53.43, -6.25], label: "Ireland" },
-  { id: "fra", location: [50.1, 8.7], label: "Frankfurt" },
-  { id: "arn", location: [65.6, 22.1], label: "Sweden" },
-  { id: "bom", location: [19.09, 72.87], label: "Mumbai" },
-  { id: "sin", location: [1.36, 103.99], label: "Singapore" },
-  { id: "hnd", location: [35.55, 139.78], label: "Tokyo" },
-  { id: "syd", location: [-33.95, 151.18], label: "Sydney" },
-  { id: "gru", location: [-23.43, -46.47], label: "São Paulo" },
+/** Same edge locations as the cobe showcase, labelled with their AWS region codes. */
+const REGIONS: { id: string; location: LatLng; region: string }[] = [
+  { id: "iad", location: [38.95, -77.45], region: "us-east-1" },
+  { id: "sfo", location: [37.62, -122.38], region: "us-west-1" },
+  { id: "cdg", location: [49.01, 2.55], region: "eu-west-3" },
+  { id: "hnd", location: [35.55, 139.78], region: "ap-northeast-1" },
+  { id: "syd", location: [-33.95, 151.18], region: "ap-southeast-2" },
+  { id: "gru", location: [-23.43, -46.47], region: "sa-east-1" },
+  { id: "sin", location: [1.36, 103.99], region: "ap-southeast-1" },
+  { id: "arn", location: [59.65, 17.93], region: "eu-north-1" },
+  { id: "dub", location: [53.43, -6.25], region: "eu-west-1" },
+  { id: "bom", location: [19.09, 72.87], region: "ap-south-1" },
 ]
 
-const defaultLinks: GlobeLink[] = [
-  { id: "l1", from: [38.95, -77.45], to: [53.43, -6.25] },
-  { id: "l2", from: [53.43, -6.25], to: [50.1, 8.7] },
-  { id: "l3", from: [50.1, 8.7], to: [19.09, 72.87] },
-  { id: "l4", from: [19.09, 72.87], to: [1.36, 103.99] },
-  { id: "l5", from: [1.36, 103.99], to: [35.55, 139.78] },
-  { id: "l6", from: [38.95, -77.45], to: [-23.43, -46.47] },
+const LINKS: { id: string; from: LatLng; to: LatLng; base: number }[] = [
+  { id: "a1", from: [38.95, -77.45], to: [49.01, 2.55], base: 420 }, // IAD → CDG
+  { id: "a2", from: [37.62, -122.38], to: [35.55, 139.78], base: 380 }, // SFO → HND
+  { id: "a3", from: [49.01, 2.55], to: [1.36, 103.99], base: 290 }, // CDG → SIN
+  { id: "a4", from: [38.95, -77.45], to: [-23.43, -46.47], base: 185 }, // IAD → GRU
+  { id: "a5", from: [35.55, 139.78], to: [-33.95, 151.18], base: 156 }, // HND → SYD
+  { id: "a6", from: [49.01, 2.55], to: [19.09, 72.87], base: 134 }, // CDG → BOM
 ]
 
 type RGB = [number, number, number]
-const RED: RGB = [0.94, 0.2, 0.22]
+const RED: RGB = [0.86, 0.12, 0.14]
 
-/** Dark planet in dark mode; in light mode the sphere turns white with dark dots. */
 const palettes: Record<Theme, Partial<COBEOptions>> = {
-  dark: {
-    dark: 1,
-    baseColor: [0.16, 0.16, 0.18],
-    glowColor: [0.5, 0.08, 0.1],
-    markerColor: RED,
-    arcColor: [0.85, 0.2, 0.22],
-    mapBrightness: 7,
-    diffuse: 1.1,
-  },
   light: {
     dark: 0,
     baseColor: [1, 1, 1],
-    glowColor: [1, 0.86, 0.86],
+    glowColor: [1, 0.9, 0.9],
     markerColor: RED,
-    arcColor: [0.85, 0.12, 0.15],
-    mapBrightness: 9,
-    diffuse: 1.4,
+    arcColor: RED,
+    mapBrightness: 10,
+  },
+  dark: {
+    dark: 0,
+    baseColor: [1, 1, 1],
+    glowColor: [0.55, 0.1, 0.12],
+    markerColor: RED,
+    arcColor: [0.95, 0.25, 0.27],
+    mapBrightness: 10,
   },
 }
 
 export interface GlobeCdnProps {
   className?: string
-  locations?: GlobeLocation[]
-  links?: GlobeLink[]
   /** Auto-rotation speed in radians per frame. */
   speed?: number
-  /** Initial rotation (radians). Tweak to choose which side faces the viewer first. */
-  initialPhi?: number
 }
 
-export function GlobeCdn({
-  className,
-  locations = defaultLocations,
-  links = defaultLinks,
-  speed = 0.002,
-  initialPhi = -0.4,
-}: GlobeCdnProps) {
+export function GlobeCdn({ className, speed = 0.003 }: GlobeCdnProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const globeRef = useRef<Globe | null>(null)
   const theme = useThemeStore((s) => s.theme)
@@ -101,25 +78,37 @@ export function GlobeCdn({
 
   // Unique anchor names per instance (the overview thumbnail renders a second globe).
   const uid = "g" + useId().replace(/[^a-zA-Z0-9]/g, "")
+  const mid = (id: string) => `${uid}-${id}`
 
+  const [traffic, setTraffic] = useState(() => LINKS.map((l) => l.base))
+
+  // Self-updating traffic numbers (as on the cobe site).
+  useEffect(() => {
+    if (reduced) return
+    const t = setInterval(() => {
+      setTraffic((v) => v.map((n) => Math.max(50, n + Math.floor(Math.random() * 21) - 10)))
+    }, 250)
+    return () => clearInterval(t)
+  }, [reduced])
+
+  // Create the globe once per mount.
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     // A fresh canvas per mount: reusing one across remounts (StrictMode) reuses a torn-down GL context.
     const canvas = document.createElement("canvas")
-    canvas.className = "block size-full cursor-grab touch-none opacity-0 transition-opacity duration-1000"
+    canvas.className = "block size-full cursor-grab touch-none opacity-0 transition-opacity duration-700"
     container.prepend(canvas)
 
     const stylesBefore = new Set(document.head.querySelectorAll("style"))
-    const markers: Marker[] = locations.map((l) => ({ id: `${uid}-${l.id}`, location: l.location, size: 0.025 }))
-    const arcs: Arc[] = links.map((l) => ({ id: `${uid}-${l.id}`, from: l.from, to: l.to }))
+    const markers: Marker[] = REGIONS.map((r) => ({ id: `${uid}-${r.id}`, location: r.location, size: 0.012 }))
+    const arcs: Arc[] = LINKS.map((l) => ({ id: `${uid}-${l.id}`, from: l.from, to: l.to }))
 
     let width = canvas.offsetWidth
-    let phi = initialPhi
-    let theta = 0.25
+    let phi = 0
     let velocity = 0
-    let drag: { x: number; y: number; phi: number; theta: number } | null = null
+    let drag: { x: number; phi: number } | null = null
     let raf = 0
 
     const globe = createGlobe(canvas, {
@@ -127,19 +116,19 @@ export function GlobeCdn({
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
       width,
       height: width,
-      phi,
-      theta,
-      mapSamples: 20000,
-      mapBaseBrightness: 0,
-      markerElevation: 0.01,
+      phi: 0,
+      theta: 0.2,
+      diffuse: 1.5,
+      mapSamples: 16000,
+      markerElevation: 0.02,
       markers,
       arcs,
-      arcWidth: 0.35,
-      arcHeight: 0.2,
-      opacity: 0.85,
+      arcWidth: 0.5,
+      arcHeight: 0.25,
+      opacity: 0.7,
     } as COBEOptions)
     globeRef.current = globe
-    // cobe adds a <style> for the --cobe-visible-* variables; remember it for cleanup.
+    // cobe adds this <style> for the --cobe-visible-* variables; remember it for cleanup.
     const cobeStyles = [...document.head.querySelectorAll("style")].filter((s) => !stylesBefore.has(s))
 
     const frame = () => {
@@ -147,7 +136,7 @@ export function GlobeCdn({
         phi += (reduced ? 0 : speed) + velocity
         velocity *= 0.94
       }
-      globe.update({ phi, theta, width, height: width })
+      globe.update({ phi, width, height: width })
       raf = requestAnimationFrame(frame)
     }
     frame()
@@ -158,17 +147,16 @@ export function GlobeCdn({
     ro.observe(canvas)
 
     const onDown = (e: PointerEvent) => {
-      drag = { x: e.clientX, y: e.clientY, phi, theta }
+      drag = { x: e.clientX, phi }
       velocity = 0
       canvas.setPointerCapture(e.pointerId)
       canvas.style.cursor = "grabbing"
     }
     const onMove = (e: PointerEvent) => {
       if (!drag) return
-      const next = drag.phi + (e.clientX - drag.x) / 300
+      const next = drag.phi + (e.clientX - drag.x) / 200
       velocity = (next - phi) * 0.3
       phi = next
-      theta = Math.max(-0.6, Math.min(0.9, drag.theta + (e.clientY - drag.y) / 600))
     }
     const onUp = () => {
       drag = null
@@ -197,7 +185,7 @@ export function GlobeCdn({
       if (wrapper && wrapper !== container) wrapper.remove()
       else canvas.remove()
     }
-  }, [reduced, speed, initialPhi, locations, links, uid])
+  }, [reduced, speed, uid])
 
   // Recolour on theme change without recreating the globe.
   useEffect(() => {
@@ -208,20 +196,29 @@ export function GlobeCdn({
     ({
       positionAnchor: `--cobe-${key}`,
       opacity: `var(--cobe-visible-${key}, 0)`,
-      filter: `blur(calc((1 - var(--cobe-visible-${key}, 0)) * 6px))`,
+      filter: `blur(calc((1 - var(--cobe-visible-${key}, 0)) * 8px))`,
     }) as CSSProperties
 
   return (
-    <div ref={containerRef} data-no-nav className={cn("globe relative aspect-square w-full select-none", className)}>
+    <div ref={containerRef} data-no-nav className={cn("cdn-globe relative aspect-square w-full select-none", className)}>
       {/* The canvas is created in the effect above. */}
 
-      {/* Rim light: red from the upper left, white from the lower left (sits on the sphere's edge). */}
-      <div aria-hidden className="globe-rim" />
+      {REGIONS.map((r) => (
+        <div key={r.id} className="cdn-marker" style={anchored(mid(r.id))}>
+          <div className="cdn-pyramid">
+            <div className="cdn-pyramid-face" />
+            <div className="cdn-pyramid-face" />
+            <div className="cdn-pyramid-face" />
+            <div className="cdn-pyramid-face" />
+          </div>
+          <span className="cdn-label">{r.region}</span>
+        </div>
+      ))}
 
-      {locations.map((l) => (
-        <span key={l.id} className="globe-label" style={anchored(`${uid}-${l.id}`)}>
-          {l.label}
-        </span>
+      {LINKS.map((l, i) => (
+        <div key={l.id} className="cdn-arc-label" style={anchored(`arc-${mid(l.id)}`)}>
+          {traffic[i]}k req/s
+        </div>
       ))}
     </div>
   )

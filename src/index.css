@@ -93,55 +93,74 @@
   z-index: 2;
 }
 
-/* ───────────── Globe ───────────── */
-/* Sphere occupies the central --globe-size of the canvas (cobe draws it at ~80% of the width). */
-.globe {
-  --globe-size: 80%;
-}
-.globe-rim {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--globe-size);
-  height: var(--globe-size);
-  translate: -50% -50%;
-  border-radius: 9999px;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  box-shadow:
-    inset 16px 18px 26px -14px rgb(239 59 66 / 0.95),
-    inset 16px -18px 26px -14px rgb(255 240 240 / 0.85),
-    -14px -10px 46px -12px rgb(239 59 66 / 0.6),
-    -14px 14px 46px -12px rgb(255 255 255 / 0.35);
-}
-[data-theme="light"] .globe-rim {
-  mix-blend-mode: multiply;
-  box-shadow:
-    inset 16px 18px 26px -14px rgb(224 20 30 / 0.55),
-    inset 16px -18px 26px -14px rgb(255 200 200 / 0.5),
-    -14px -10px 46px -12px rgb(224 20 30 / 0.35),
-    -14px 14px 46px -12px rgb(160 40 50 / 0.15);
-}
-.globe-label {
+/* ───────────── Globe CDN overlays (from the cobe "▲ CDN" showcase) ───────────── */
+.cdn-marker,
+.cdn-arc-label {
   position: absolute;
   bottom: anchor(top);
   left: anchor(center);
   translate: -50% 0;
-  margin-bottom: 12px;
   pointer-events: none;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #fff;
-  background: rgb(14 10 11 / 0.92);
-  border: 1px solid rgb(255 255 255 / 0.12);
-  padding: 4px 8px;
-  border-radius: 2px;
   transition: opacity 0.3s, filter 0.3s;
 }
+.cdn-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.cdn-pyramid {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cdn-pyramid-spin 4s linear infinite;
+}
+.cdn-pyramid-face {
+  position: absolute;
+  left: -0.5px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-left: 6.5px solid transparent;
+  border-right: 6.5px solid transparent;
+  border-bottom: 13px solid #dc2626;
+  transform-origin: center bottom;
+}
+.cdn-pyramid-face:nth-child(1) { transform: rotateY(0deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #991b1b; }
+.cdn-pyramid-face:nth-child(2) { transform: rotateY(120deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #dc2626; }
+.cdn-pyramid-face:nth-child(3) { transform: rotateY(240deg) translateZ(4px) rotateX(19.5deg); border-bottom-color: #f87171; }
+.cdn-pyramid-face:nth-child(4) { transform: rotateX(-90deg) rotateZ(60deg) translateY(4px); border-bottom-color: #7f1d1d; }
+.cdn-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #c8101a;
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgb(120 10 20 / 0.25);
+}
+.cdn-arc-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: #fff;
+  background: #dc2626;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@keyframes cdn-pyramid-spin {
+  from { transform: rotateX(20deg) rotateY(0deg); }
+  to { transform: rotateX(20deg) rotateY(360deg); }
+}
 @supports not (anchor-name: --test) {
-  .globe-label { display: none; }
+  .cdn-marker,
+  .cdn-arc-label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cdn-pyramid { animation: none; }
 }
