@@ -45,8 +45,10 @@ const TechText = ({
 	color = "currentColor",
 	accentColor = "currentColor",
 	align = "center",
-	/** Side margin for left/right align, as a fraction of the width (default 5%). Use 0 to sit flush with surrounding text. */
-	inset,
+	/** Side margin for left/right align, as a fraction of the width. Use 0 to sit flush with surrounding text. */
+	inset = 0.05,
+	/** Side margin in px for left/right align; overrides `inset` when ≥ 0. Lets the canvas bleed past the text so outlines/handles aren't clipped. */
+	gutter = -1,
 	reach = 200,
 	softness = 0.7,
 	dashLength = 4,
@@ -84,6 +86,7 @@ const TechText = ({
 			accentColor,
 			align,
 			inset,
+			gutter,
 			reach,
 			softness,
 			dashLength,
@@ -217,6 +220,7 @@ const TechText = ({
 				s.letterSpacing,
 				s.align,
 				s.inset,
+				s.gutter,
 				ink,
 				s.dashLength,
 				s.dashGap,
@@ -249,7 +253,7 @@ const TechText = ({
 			m = probe.measureText(s.text);
 			const inkWidth = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
 			const inkHeight = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
-			const margin = width * (s.inset ?? 0.05);
+			const margin = s.gutter >= 0 ? s.gutter : width * s.inset;
 			const start =
 				s.align === "left"
 					? margin
