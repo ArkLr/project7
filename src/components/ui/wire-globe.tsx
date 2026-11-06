@@ -63,12 +63,30 @@ export function WireGlobe({
 
 		// Theme colours are read once per theme change (the effect re-runs on `theme`).
 		const ink =
-			getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#000";
+			getComputedStyle(document.documentElement)
+				.getPropertyValue("--fg")
+				.trim() || "#000";
 		const isDark = theme === "dark";
 		const hazeRgb = isDark ? "255,255,255" : "20,10,11";
 		const alpha = isDark
-			? { front: 0.82, back: 0.13, ring: 0.55, inner: 0.22, speck: 0.6, haze: 0.13, star: 1 }
-			: { front: 0.62, back: 0.1, ring: 0.42, inner: 0.16, speck: 0.4, haze: 0.07, star: 0.85 };
+			? {
+					front: 0.82,
+					back: 0.13,
+					ring: 0.55,
+					inner: 0.22,
+					speck: 0.6,
+					haze: 0.13,
+					star: 1,
+				}
+			: {
+					front: 0.62,
+					back: 0.1,
+					ring: 0.42,
+					inner: 0.16,
+					speck: 0.4,
+					haze: 0.07,
+					star: 0.85,
+				};
 
 		// Stable pseudo-random specks (seeded so the overview thumbnail matches).
 		let seed = 7;
@@ -128,17 +146,6 @@ export function WireGlobe({
 			ctx.fillStyle = ink;
 			ctx.lineJoin = "round";
 			ctx.lineCap = "butt";
-
-			// ── Specks (never on the sphere face) ──
-			for (const d of dots) {
-				const px = ((((d.x + time * d.drift) % 1) + 1) % 1) * w;
-				const py = d.y * h;
-				if (Math.hypot(px - cx, py - cy) < R * 1.005) continue;
-				ctx.globalAlpha = alpha.speck * (0.4 + 0.6 * Math.sin(time * 1.3 + d.phase) ** 2);
-				ctx.beginPath();
-				ctx.arc(px, py, d.r * hair, 0, Math.PI * 2);
-				ctx.fill();
-			}
 
 			// ── Atmosphere: a tight faint band hugging the limb, then a gap and a wider band ──
 			ctx.lineWidth = hair;
@@ -231,7 +238,11 @@ export function WireGlobe({
 				const z = cl * Math.cos(lon + spin);
 				const y2 = y * cosT - z * sinT;
 				const z2 = y * sinT + z * cosT;
-				return [cx + R * (x * cosR - y2 * sinR), cy - R * (x * sinR + y2 * cosR), z2];
+				return [
+					cx + R * (x * cosR - y2 * sinR),
+					cy - R * (x * sinR + y2 * cosR),
+					z2,
+				];
 			};
 			const addLine = (pts: Pt[]) => {
 				let side: Path2D | null = null;
@@ -253,7 +264,8 @@ export function WireGlobe({
 
 			for (let lat = -90 + latStep; lat < 90 - 1e-6; lat += latStep) {
 				const pts: Pt[] = [];
-				for (let i = 0; i <= SEG; i++) pts.push(project(lat * DEG, (i / SEG) * Math.PI * 2));
+				for (let i = 0; i <= SEG; i++)
+					pts.push(project(lat * DEG, (i / SEG) * Math.PI * 2));
 				addLine(pts);
 			}
 			for (let lon = 0; lon < 360 - 1e-6; lon += lonStep) {
@@ -299,7 +311,20 @@ export function WireGlobe({
 			ro.disconnect();
 			window.removeEventListener("resize", onWinResize);
 		};
-	}, [theme, reduced, radius, top, tilt, roll, latStep, lonStep, rings, specks, orbiters, speed]);
+	}, [
+		theme,
+		reduced,
+		radius,
+		top,
+		tilt,
+		roll,
+		latStep,
+		lonStep,
+		rings,
+		specks,
+		orbiters,
+		speed,
+	]);
 
 	return (
 		<canvas
