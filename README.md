@@ -1,132 +1,144 @@
-# Cloud and Parallel Architectures slide deck
+<div align="center">
 
-A presentation engine built with Vite, React, TypeScript and Tailwind v4. Each slide is a React component.
+# Hyperscale Data Centers
+
+### Dedicated Hardware and Parallel Architectures at Meta and Amazon
+
+An interactive slide deck on **cloud and parallel architectures**: how Meta (Facebook) and Amazon Web Services design their own servers, chips, networks and data centers.
+
+Built with **React · TypeScript · Vite · Tailwind CSS v4**
+
+</div>
+
+---
+
+## Authors
+
+- Laroui Riadh Brahim
+- Bader Mohammed Chakib
+
+## What the presentation covers
+
+23 slides in 10 sections, from the basics of cloud and parallel computing to a comparison of AWS and Meta.
+
+| # | Section | Slides |
+| -- | --- | -- |
+| 1 | Title and agenda | 2 |
+| 2 | Introduction to Cloud and Parallel Computing | 3 |
+| 3 | Fundamentals of Cloud Architecture | 2 |
+| 4 | Parallel Processing and Distributed Systems | 2 |
+| 5 | Amazon AWS: Infrastructure and Hardware (Graviton, Nitro, storage) | 3 |
+| 6 | Meta (Facebook): Infrastructure and Hardware (OCP, network fabric, AI) | 2 |
+| 7 | Networking, Storage and Virtualization (VMs vs containers) | 3 |
+| 8 | Performance, Scalability and Fault Tolerance | 1 |
+| 9 | Comparison between AWS and Meta architectures | 2 |
+| 10 | Current Trends and Future Directions | 2 |
+| 11 | Conclusion | 1 |
+
+## Features
+
+- Smooth slide transitions (fade, slide, zoom, blur, flip), set per slide
+- Step-by-step reveals and staggered entrance animations
+- Interactive 3D logos (cloud, AWS, Meta, chip) that tilt toward the mouse
+- Interactive globe on the title slide (drag to rotate)
+- Light and dark themes
+- Overview grid, fullscreen mode, touch swipe, and a URL hash that keeps your place on refresh
+- Respects `prefers-reduced-motion`
+
+## Getting started
+
+Requires [Node.js](https://nodejs.org) 20+ and [pnpm](https://pnpm.io).
 
 ```bash
+git clone https://github.com/ArkLr/project7.git
+cd project7
 pnpm install
-pnpm dev       # http://localhost:5173
-pnpm build     # type-check + production build into dist/
-pnpm preview   # serve the production build
+pnpm dev        # http://localhost:5173
 ```
 
-## Add a slide
+Other commands:
 
-1. Create `src/slides/04-my-slide.tsx`:
-
-   ```tsx
-   import { Slide, Reveal, Step } from '@/components/deck'
-   import { Heading } from '@/components/ui/Heading'
-
-   export default function MySlide() {
-     return (
-       <Slide layout="top">
-         <Heading>My title</Heading>
-         <Reveal effect="fade-up">            {/* children appear one after another */}
-           <p>First</p>
-           <p>Second</p>
-         </Reveal>
-         <Step>Shown on the 1st → press</Step>
-         <Step dim>Shown on the 2nd → press (and dims after)</Step>
-       </Slide>
-     )
-   }
-   ```
-
-2. Register it in `src/slides/index.ts`. Add the import, then one line in the array:
-
-   ```ts
-   import MySlide from './04-my-slide'
-   // …
-   { component: MySlide, title: 'My slide', transition: 'blur' },
-   ```
-
-The array order is the slide order. `title` is the label shown in the overview grid.
-
-## Change a transition
-
-Set `transition` on the slide's entry in `src/slides/index.ts`:
-
-| value   | effect                               |
-| ------- | ------------------------------------ |
-| `fade`  | cross-fade (default)                 |
-| `slide` | push along the deck's axis (up/down) |
-| `zoom`  | scale in/out                         |
-| `blur`  | blur + fade                          |
-| `flip`  | 3D turn over the horizontal axis     |
-| `none`  | instant cut                          |
-
-The entering slide's transition is used going forward. Going back, the leaving slide's transition plays in reverse.
-Slides move **vertically** (↓ / ↑, swipe up/down); set `orientation: 'horizontal'` in `src/deck.config.ts` for left/right. To change the fallback transition, edit `defaultTransition` there too. To tweak timings or add a new transition, edit `src/engine/transitions.ts`.
-
-## Authoring API (`@/components/deck`)
-
-| Component | Props | Notes |
-| --- | --- | --- |
-| `<Slide>` | `layout` (`center` · `top` · `split`), `stagger`, `effect`, `staggerDelay`, `delay`, `className` | Root of every slide. Animates its direct children one after another. Long content scrolls smoothly with Lenis. Use `stagger={false}` to stop it wrapping children. |
-| `<Reveal>` | `effect`, `delay`, `stagger`, `as` (`div` · `section` · `ul` · `ol`), `each`, `itemClassName` | Staggered entrance for any group. Use `each={false}` to animate the block as a whole. |
-| `<Step>` | `at`, `effect`, `dim`, `as` (`div` · `li` · `span`) | Step-by-step builds. Steps are numbered automatically in document order. Give several steps the same `at` to show them together. |
-| `<ScrollArea>` | `className`, `contentClassName` | Smooth (Lenis) scrolling for overflowing content. |
-
-Effects: `fade`, `fade-up`, `fade-down`, `fade-left`, `fade-right`, `scale`, `blur`, `flip`.
-
-Slides are laid out on a fixed **1280×720** canvas that scales to fit any screen. Size things for that canvas.
-
-Ready-made extras:
-- `@/components/ui`: `Heading` (with a `gradient` option), `Card` (hover lift and a spotlight that follows the cursor), `Badge`, `GlobeCdn` (the "▲ CDN" globe from the open-source [cobe](https://github.com/shuding/cobe) showcase: spinning pyramid markers, live traffic labels, red & white; used on the title slide and draggable). Edit `REGIONS` / `LINKS` at the top of `src/components/ui/cobe-globe-cdn.tsx` to change it.
-- `@/components/wensity`: `TextBlurReveal`, `TextShimmer`. Add more with `pnpm dlx wensity add <slug>` (`pnpm dlx wensity list` shows what's available).
-- `@/components/reactbits/SplitText`: inside slides, use `trigger="load"` because slides don't scroll into view. Add more with `pnpm dlx shadcn@latest add @react-bits/<Name>-JS-CSS`.
-- Icons come from `lucide-react`.
+```bash
+pnpm build      # type-check + production build into dist/
+pnpm preview    # serve the production build
+```
 
 ## Controls
 
 | Key | Action |
 | --- | --- |
-| → ↓ Space PageDown Enter | next step / slide |
-| ← ↑ Shift+Space PageUp Backspace | previous |
-| Home / End | first / last slide |
-| F | fullscreen |
-| T | toggle theme |
-| Esc / O | overview grid (arrow keys move the highlight, Enter opens a slide) |
+| → ↓ Space Enter PageDown | Next step / slide |
+| ← ↑ Backspace PageUp | Previous |
+| Home / End | First / last slide |
+| F | Fullscreen |
+| T | Toggle light / dark theme |
+| Esc or O | Overview grid (arrow keys to move, Enter to open) |
 
-Clicking the slide does nothing (set `clickToNavigate: true` in `src/deck.config.ts` to turn click-to-advance back on). You can also swipe on touch screens or use the floating control bar. The bar and cursor hide when the pointer is idle.
-The URL hash (`#3`) follows the current slide, so a refresh keeps your place.
-
-## Themes
-
-Light and dark themes are CSS variables in `src/index.css` (`:root` and `[data-theme="dark"]`). Tailwind exposes them as `bg-bg`, `text-fg`, `text-muted`, `bg-surface`, `border-border`, `text-accent`, `text-accent-2` and so on.
-The deck follows the system theme until you toggle it. Your choice is then saved in `localStorage` under `deck-theme`; delete that key to follow the system again. An inline script in `index.html` sets the theme before the first paint, so there's no flash. Toggling plays a circular reveal using the View Transitions API.
-
-`prefers-reduced-motion` is respected: slide transitions become fades, entrance transforms are disabled, and the globe stops auto-rotating.
-
-## Configuration (`src/deck.config.ts`)
-
-`title`, `subtitle`, canvas `width`/`height`, `orientation`, `defaultTransition`, `clickToNavigate`, `idleTimeout`.
+Touch screens: swipe up or down. The control bar and cursor hide when the pointer is idle.
 
 ## Project structure
 
 ```
 src/
-├── slides/                 ← your content
-│   ├── index.ts            slide registry (order, title, transition)
-│   ├── types.ts
-│   └── 01-title.tsx …      one component per slide
-├── components/
-│   ├── deck/               authoring API: Slide, Reveal, Step, ScrollArea, contexts
-│   ├── ui/                 Heading, Card, Badge, cobe-globe-cdn
-│   ├── wensity/            Wensity components (installed via CLI)
-│   └── reactbits/          React Bits components (installed via shadcn)
-├── engine/                 the presentation runtime
-│   ├── Deck.tsx            AnimatePresence stage + transitions
-│   ├── Stage.tsx           scales the 1280×720 canvas to the viewport
-│   ├── SlideRenderer.tsx   wraps a slide with its contexts
-│   ├── transitions.ts      fade / slide / zoom / blur / flip / none
-│   ├── Overview.tsx        thumbnail grid
-│   └── Controls.tsx, ProgressBar.tsx, SlideCounter.tsx, ThemeToggle.tsx, IconButton.tsx
-├── hooks/                  useSlides, useKeyboardNav, useTheme, useFullscreen,
-│                           useHashSync, useSwipeNav, useIdle, useElementSize, …
-├── store/                  zustand stores (deck position/steps, theme)
-├── lib/                    cn(), hash parsing, overview layout
-├── deck.config.ts
-├── index.css               Tailwind + theme tokens
-└── App.tsx
+├── slides/
+│   ├── index.ts                 slide order, titles and transitions
+│   ├── 01-title.tsx             title slide (globe)
+│   ├── 02-agenda.tsx            10-card agenda
+│   ├── 03-… to 12-Conclusion    one file per section, each exports a `slides` list
+│   ├── kit.tsx                  slide templates: CardsSlide, TableSlide, ListSlide
+│   └── logo3d.tsx               extruded 3D logos (cloud, aws, meta, chip)
+├── components/                  deck API (Slide, Reveal, Step), UI, effects
+├── engine/                      presentation runtime and transitions
+├── hooks/  store/  lib/         navigation, theme, state helpers
+└── deck.config.ts               title, canvas size, default transition
 ```
+
+Slides are laid out on a fixed **1280 × 720** canvas that scales to fit any screen.
+
+## Editing the content
+
+Most slides are written as data using the templates in `kit.tsx`. To change a slide's text, open its section file and edit it:
+
+```tsx
+<CardsSlide bg="aws" title="AWS custom hardware" tag="4. Amazon AWS" cols={2}
+  cards={[
+    { icon: Cpu, title: 'Graviton processors', text: '…' },
+    { icon: Zap, title: 'Nitro System',        text: '…' },
+  ]} />
+```
+
+| Template | Use it for |
+| --- | --- |
+| `CardsSlide` | A grid of 2 to 6 cards with icon, heading and text |
+| `TableSlide` | Comparisons, with rows that animate in |
+| `ListSlide` | Bullet points with an optional side box |
+
+Template options:
+
+- `bg`: the 3D logo in the corner (`cloud`, `aws`, `meta`, `chip`, `compare`)
+- `tag`: the small section label above the title
+- `note`: a highlighted closing line
+
+**Add a slide:** add an entry to a section file's `slides` list. Each entry has a `title`, a `transition` (`fade` · `slide` · `zoom` · `blur` · `flip` · `none`) and a `component`.
+
+**Add a new section:** create `NN-name.tsx` that exports `slides`, import it in `src/slides/index.ts`, and spread it into the array.
+
+**Custom slide:** write a normal component with `<Slide>`, `<Reveal>` and `<Step>` from `@/components/deck`, then register it in `index.ts` as `{ component: MySlide, title: '…', transition: '…' }`.
+
+Keep each slide to roughly the height of the canvas: content taller than 720px makes a scroll bar appear.
+
+## Theming
+
+Light and dark themes are CSS variables in `src/index.css`. They are used as Tailwind classes such as `bg-bg`, `text-fg`, `text-muted`, `bg-surface`, `border-border`, `text-accent`. The deck follows the system theme until you toggle it, and then remembers your choice.
+
+## Built with
+
+- [React](https://react.dev), [TypeScript](https://www.typescriptlang.org), [Vite](https://vite.dev), [Tailwind CSS](https://tailwindcss.com)
+- [Motion](https://motion.dev) for animation, [Lenis](https://lenis.darkroom.engineering) for smooth scrolling, [Zustand](https://zustand.docs.pmnd.rs) for state
+- [cobe](https://github.com/shuding/cobe) for the globe, [Lucide](https://lucide.dev) for icons
+- [React Bits](https://reactbits.dev) and [Wensity](https://wensity.com) for text effects
+
+## Notes
+
+- AWS, Amazon, Meta and Facebook are trademarks of their respective owners. The 3D logos in this project are simplified drawings made for an educational presentation.
+- Figures and product names come from the authors' course material and public information from AWS and Meta (for example Graviton, Nitro, and the Open Compute Project). Check them against current sources before reusing.
