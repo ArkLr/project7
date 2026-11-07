@@ -1,8 +1,21 @@
+import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { Reveal, Slide } from '@/components/deck'
-import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
+
+/** Section tag with a green "active" dot. */
+function Tag({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex w-fit items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-sm text-muted">
+      <span className="relative flex size-2">
+        <span className="absolute inline-flex size-full rounded-full bg-green-500 opacity-60 motion-safe:animate-ping" />
+        <span className="relative inline-flex size-2 rounded-full bg-green-500" />
+      </span>
+      {children}
+    </span>
+  )
+}
 
 /** Reusable slide templates, sized for the 1280×720 canvas. */
 
@@ -16,7 +29,7 @@ export function CardsSlide(p: {
   const grid = { 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' }[p.cols ?? 3]
   return (
     <Slide layout="top">
-      {p.tag && <Badge>{p.tag}</Badge>}
+      {p.tag && <Tag>{p.tag}</Tag>}
       <Heading gradient>{p.title}</Heading>
       <Reveal className={`grid ${grid} gap-5`} effect="scale" delay={0.3} stagger={0.1}>
         {p.cards.map(({ icon: Icon, title, text }) => (
@@ -35,7 +48,7 @@ export function CardsSlide(p: {
 export function TableSlide(p: { title: string; tag?: string; head: string[]; rows: string[][]; note?: string }) {
   return (
     <Slide layout="top" stagger={false}>
-      {p.tag && <Badge>{p.tag}</Badge>}
+      {p.tag && <Tag>{p.tag}</Tag>}
       <Heading gradient>{p.title}</Heading>
       <Reveal each={false} effect="fade-up" delay={0.3}>
         <table className="w-full border-collapse text-left text-lg">
@@ -65,7 +78,7 @@ export function TableSlide(p: { title: string; tag?: string; head: string[]; row
 export function ListSlide(p: { title: string; tag?: string; intro?: string; items: string[]; aside?: { title: string; text: string } }) {
   return (
     <Slide layout="top">
-      {p.tag && <Badge>{p.tag}</Badge>}
+      {p.tag && <Tag>{p.tag}</Tag>}
       <Heading gradient>{p.title}</Heading>
       {p.intro && <p className="max-w-4xl text-xl text-muted">{p.intro}</p>}
       <div className="grid grid-cols-[1.2fr_1fr] items-start gap-10">
