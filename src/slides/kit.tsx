@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { Reveal, Slide } from '@/components/deck'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
-import { Backdrop, type BackdropVariant } from './backdrop'
+import { Logo3D, type LogoKind } from './logo3d'
 
 /** Section tag with a green "active" dot. */
 function Tag({ children }: { children: ReactNode }) {
@@ -19,11 +19,11 @@ function Tag({ children }: { children: ReactNode }) {
   )
 }
 
-/** Puts an animated, mouse-reactive background behind a slide. */
-function Frame({ bg, children }: { bg?: BackdropVariant; children: ReactNode }) {
+/** Puts an interactive 3D logo in the corner of a slide. */
+function Frame({ bg, children }: { bg?: LogoKind; children: ReactNode }) {
   return (
     <div className="relative h-full w-full">
-      {bg && <Backdrop variant={bg} />}
+      {bg && <Logo3D kind={bg} />}
       <div className="relative z-10 h-full w-full">{children}</div>
     </div>
   )
@@ -34,7 +34,7 @@ function Frame({ bg, children }: { bg?: BackdropVariant; children: ReactNode }) 
 export function CardsSlide(p: {
   title: string
   tag?: string
-  bg?: BackdropVariant
+  bg?: LogoKind
   cards: { icon: LucideIcon; title: string; text: string }[]
   cols?: 2 | 3 | 4
   note?: string
@@ -69,7 +69,7 @@ export function CardsSlide(p: {
   )
 }
 
-export function TableSlide(p: { title: string; tag?: string; bg?: BackdropVariant; head: string[]; rows: string[][]; note?: string }) {
+export function TableSlide(p: { title: string; tag?: string; bg?: LogoKind; head: string[]; rows: string[][]; note?: string }) {
   return (
     <Frame bg={p.bg}>
       <Slide layout="top" stagger={false}>
@@ -106,7 +106,7 @@ export function TableSlide(p: { title: string; tag?: string; bg?: BackdropVarian
   )
 }
 
-export function ListSlide(p: { title: string; tag?: string; bg?: BackdropVariant; intro?: string; items: string[]; aside?: { title: string; text: string } }) {
+export function ListSlide(p: { title: string; tag?: string; bg?: LogoKind; intro?: string; items: string[]; aside?: { title: string; text: string } }) {
   return (
     <Frame bg={p.bg}>
       <Slide layout="top">
