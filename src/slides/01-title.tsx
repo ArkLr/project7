@@ -6,7 +6,7 @@ import { WireGlobe } from "@/components/ui/wire-globe";
 /** Presenters shown under the title. Edit names / roles here. */
 const AUTHORS: { name: string; role?: string }[] = [
 	{ name: "Laroui riadh brahim", role: "" },
-	{ name: "Bader Mohammed Chaib", role: "" },
+	{ name: "Bader Mohammed Chakib", role: "" },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
