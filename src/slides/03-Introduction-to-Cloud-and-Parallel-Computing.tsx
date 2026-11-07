@@ -12,7 +12,7 @@
 
 import { Gauge, Layers, Scale, Shield } from 'lucide-react'
 import type { SlideEntry } from './types'
-import { CardsSlide, ListSlide } from './kit'
+import { CardsSlide, ListSlide } from './Kit'
 
 export const slides: SlideEntry[] = [
   {
