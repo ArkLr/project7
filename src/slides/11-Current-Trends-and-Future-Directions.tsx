@@ -58,7 +58,7 @@ export const slides: SlideEntry[] = [
           { icon: Cpu, title: 'Custom processors', text: 'AWS Graviton, Trainium and Inferentia; Meta MTIA.' },
           { icon: Leaf, title: 'Energy efficiency', text: 'Efficient chips, advanced and liquid cooling, renewable energy.' },
           { icon: Radio, title: 'Edge computing', text: 'Process data near its source: lower latency and network traffic.' },
-          { icon: Snowflake, title: 'High-speed networking', text: 'Ethernet, InfiniBand, RDMA, optical interconnects. Meta\u2019s October 2026 OCP announcements include AI fabrics and liquid-cooled network gear.' },
+          { icon: Snowflake, title: 'High-speed networking', text: 'Ethernet, InfiniBand, RDMA and optical links. Meta\u2019s October 2026 OCP news includes liquid-cooled network gear.' },
           { icon: HardDrive, title: 'Disaggregation', text: 'Separating compute, memory and storage so each can scale on its own.' },
         ]} />
     ),
