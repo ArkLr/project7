@@ -1,20 +1,39 @@
-import { Slide, Step } from "@/components/deck";
+import { Reveal, Slide } from "@/components/deck";
+import { Card } from "@/components/ui/Card";
 import { Heading } from "@/components/ui/Heading";
-
-// Placeholder — shows step-by-step builds. Press → to reveal each <Step>.
-export default function agenda() {
+ 
+const sections = [
+	"Introduction to Cloud and Parallel Computing",
+	"Fundamentals of Cloud Architecture",
+	"Parallel Processing and Distributed Systems",
+	"Amazon AWS Infrastructure and Hardware",
+	"Meta (Facebook) Infrastructure and Hardware",
+	"Networking, Storage and Virtualization",
+	"Performance, Scalability and Fault Tolerance",
+	"Comparison Between AWS and Meta Architectures",
+	"Current Trends and Future Directions",
+	"Conclusion",
+];
+ 
+export default function Agenda() {
 	return (
 		<Slide layout="top">
-			<Heading>Our agenda for today</Heading>
-			<div className="grid grid-cols-3 gap-6">
-				{[1, 2, 3].map((n) => (
-					<Step key={n} effect="fade-up" dim>
-						<div className="grid h-56 place-items-center rounded-2xl border border-dashed border-border bg-surface font-mono text-muted">
-							Step {n}
-						</div>
-					</Step>
+			<Heading gradient>Our agenda for today</Heading>
+			<Reveal
+				className="grid grid-cols-5 gap-4"
+				effect="fade-up"
+				delay={0.3}
+				stagger={0.08}
+			>
+				{sections.map((title, i) => (
+					<Card key={title} className="h-48">
+						<p className="font-mono text-3xl text-accent">
+							{String(i + 1).padStart(2, "0")}
+						</p>
+						<h3 className="mt-3 text-lg font-semibold leading-snug">{title}</h3>
+					</Card>
 				))}
-			</div>
+			</Reveal>
 		</Slide>
 	);
 }
