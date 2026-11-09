@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import SplitText from "@/components/reactbits/SplitText";
 import TechText from "@/components/reactbits/TechText";
-import { WireGlobe } from "@/components/ui/wire-globe";
+import { GlobeCdn } from "@/components/ui/globe-cdn";
 
 /** Presenters shown under the title. Edit names / roles here. */
 const AUTHORS: { name: string; role?: string }[] = [
@@ -14,24 +14,32 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function TitleSlide() {
 	return (
 		<div className="relative h-full w-full">
-			{/* Horizon globe: bleeds to the window edges and fades in at the top. */}
+			{/* Globe in the bottom-right corner, cropped by the window edges. */}
 			<motion.div
 				aria-hidden
-				className="pointer-events-none absolute -bottom-(--bleed-y,0px) -inset-x-(--bleed-x,0px) h-[calc(62%+var(--bleed-y,0px))] mask-[linear-gradient(to_bottom,transparent,black_30%)]"
+				className="pointer-events-none absolute -inset-x-(--bleed-x,0px) -inset-y-(--bleed-y,0px) overflow-hidden"
 				initial={{ opacity: 0, y: 60 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ delay: 0.3, duration: 1.6, ease }}
 			>
-				<WireGlobe />
+				<div
+					data-no-nav
+					className="pointer-events-auto absolute -right-16 -bottom-46 w-3xl"
+				>
+					<GlobeCdn className="w-full" />
+				</div>
 			</motion.div>
 
 			{/* Title block */}
-			<header className="relative z-10 flex flex-col items-start pt-10 pl-10">
+			<header className="relative z-10 flex flex-col items-start pt-20 pl-15">
 				{/* Course name (kicker). The canvas is invisible to screen readers, so mirror it as text. */}
 				<p className="sr-only">Cloud &amp; Parallel Architectures</p>
 				{/* The canvas bleeds 24px left/right and 12px top/bottom so the dashed outlines and
 				    selection handles aren't clipped; `gutter` puts the letters back on the text edge. */}
-				<div aria-hidden className="relative -mx-6 -my-3 h-20 w-[calc(100%+3rem)] font-display">
+				<div
+					aria-hidden
+					className="relative -mx-6 -my-3 h-20 w-[calc(100%+3rem)] font-display"
+				>
 					<TechText
 						text="Cloud &amp; Parallel Architectures"
 						fontWeight={600}

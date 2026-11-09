@@ -270,9 +270,9 @@ export function WireGlobe({
 			}
 			for (let lon = 0; lon < 360 - 1e-6; lon += lonStep) {
 				const pts: Pt[] = [];
-				// Meridians stop short of the poles so they bunch up instead of meeting in a star.
+				// Meridians run pole to pole so they all meet at a single point.
 				for (let i = 0; i <= SEG / 2; i++)
-					pts.push(project((-84 + (i / (SEG / 2)) * 168) * DEG, lon * DEG));
+					pts.push(project((-90 + (i / (SEG / 2)) * 180) * DEG, lon * DEG));
 				addLine(pts);
 			}
 
