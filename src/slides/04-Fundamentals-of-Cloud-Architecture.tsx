@@ -11,13 +11,13 @@
 
 import { Cloud, Layers, Server, Workflow } from 'lucide-react'
 import type { SlideEntry } from './types'
-import { CardsSlide, TableSlide } from './kit'
+import { FeatureSlide, TableSlide } from './kit'
 
 export const slides: SlideEntry[] = [
   {
     title: 'Cloud architecture layers', transition: 'slide',
     component: () => (
-      <CardsSlide title="Cloud architecture: four layers" tag="2. Fundamentals" cols={4}
+      <FeatureSlide title="Cloud architecture: four layers" tag="2. Fundamentals" cols={4}
         cards={[
           { icon: Server, title: 'Physical infrastructure', text: 'Servers, CPUs/GPUs, RAM, SSD/HDD, switches, power and cooling.' },
           { icon: Layers, title: 'Virtualization', text: 'A hypervisor shares one machine between isolated virtual machines.' },

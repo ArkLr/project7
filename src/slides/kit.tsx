@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import { Reveal, Slide } from '@/components/deck'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
+import { FeatureCard } from '@/components/ui/feature-section'
 import { Logo3D, type LogoKind } from './logo3d'
 
 /** Section tag with a green "active" dot. */
@@ -64,6 +65,37 @@ export function CardsSlide(p: {
           ))}
         </Reveal>
         {p.note && <p className="mt-6 text-lg text-accent-2">{p.note}</p>}
+      </Slide>
+    </Frame>
+  )
+}
+
+/** Same API as CardsSlide, with blueprint-style feature cards (feature-section.tsx). */
+export function FeatureSlide(p: {
+  title: string
+  tag?: string
+  bg?: LogoKind
+  cards: { icon: LucideIcon; title: string; text: string }[]
+  cols?: 2 | 3 | 4
+  note?: string
+}) {
+  const grid = { 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' }[p.cols ?? 3]
+  return (
+    <Frame bg={p.bg}>
+      <Slide layout="top">
+        {p.tag && <Tag>{p.tag}</Tag>}
+        <Heading gradient>{p.title}</Heading>
+        <Reveal className={`mt-2 grid ${grid} gap-4 px-2`} itemClassName="h-full" effect="scale" delay={0.3} stagger={0.1}>
+          {p.cards.map((card, i) => (
+            <FeatureCard key={card.title} feature={card} index={i} className={p.cols === 2 ? 'min-h-64' : 'min-h-72'} />
+          ))}
+        </Reveal>
+        {p.note && (
+          <p className="mt-4 flex items-center gap-3 text-lg text-accent-2">
+            <span className="h-px w-8 bg-accent" />
+            {p.note}
+          </p>
+        )}
       </Slide>
     </Frame>
   )

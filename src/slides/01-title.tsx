@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
 import SplitText from "@/components/reactbits/SplitText";
 import TechText from "@/components/reactbits/TechText";
-import { GlobeCdn } from "@/components/ui/globe-cdn";
+//import { GlobeCdnTransparent as GlobeCdn } from "@/components/ui/globe-cdn-transparent";
+import { GlobeCdnOriginal as GlobeCdn } from "@/components/ui/globe-cdn-original";
 
 /** Presenters shown under the title. Edit names / roles here. */
 const AUTHORS: { name: string; role?: string }[] = [

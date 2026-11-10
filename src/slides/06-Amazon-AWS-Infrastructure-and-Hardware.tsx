@@ -62,13 +62,13 @@
 
 import { Cpu, Globe, MapPin, Radio, Server, Zap } from 'lucide-react'
 import type { SlideEntry } from './types'
-import { CardsSlide, TableSlide } from './kit'
+import { FeatureSlide, TableSlide } from './kit'
 
 export const slides: SlideEntry[] = [
   {
     title: 'AWS global infrastructure', transition: 'flip',
     component: () => (
-      <CardsSlide bg="aws" title="AWS global infrastructure" tag="4. Amazon AWS" cols={4}
+      <FeatureSlide bg="aws" title="AWS global infrastructure" tag="4. Amazon AWS" cols={4}
         cards={[
           { icon: Globe, title: 'Regions', text: 'Separate geographical areas where AWS runs its cloud.' },
           { icon: MapPin, title: 'Availability Zones', text: 'Physically separate data centers with independent infrastructure, inside a Region.' },
@@ -80,7 +80,7 @@ export const slides: SlideEntry[] = [
   {
     title: 'Graviton & Nitro', transition: 'fade',
     component: () => (
-      <CardsSlide bg="aws" title="AWS custom hardware" tag="4. Amazon AWS" cols={2}
+      <FeatureSlide bg="aws" title="AWS custom hardware" tag="4. Amazon AWS" cols={2}
         cards={[
           { icon: Cpu, title: 'Graviton processors', text: 'Arm-based chips designed by Amazon: energy efficiency, tuned performance, tight integration with AWS.' },
           { icon: Zap, title: 'Nitro System', text: 'Dedicated hardware and software for virtualization, networking, storage and security, freeing the main CPU for customer workloads.' },

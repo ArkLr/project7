@@ -15,11 +15,49 @@ interface CdnArc {
   to: [number, number]
 }
 
-interface GlobeCdnProps {
+interface GlobeCdnTransparentProps {
   markers?: CdnMarker[]
   arcs?: CdnArc[]
   className?: string
   speed?: number
+}
+
+/**
+ * cobe always paints the sphere opaque. This rewrites its sphere fragment shader so the
+ * ocean is fully transparent: the land-dot intensity becomes alpha, tinted with `baseColor`
+ * (uniform F), and a ring of `rim` colour is painted just inside the globe's edge.
+ * (`a` = squared distance from centre in cobe's shader; the sphere's radius is 0.8.)
+ */
+const COBE_SPHERE_OUT = "gl_FragColor=l+vec4(f*w,f);"
+const glsl = (n: number) => n.toFixed(4)
+function transparentSphereOut([r, g, b]: RGB, strength: number) {
+  return (
+    "float _m=max(max(F.r,F.g),max(F.b,1e-3));" +
+    "float _a=clamp((max(l.r,max(l.g,l.b))/_m-.1)*1.15,0.,1.);" +
+    "float _d=sqrt(a);" +
+    `float _r=${glsl(strength)}*smoothstep(.68,.8,_d)*(1.-smoothstep(.8,.806,_d));` +
+    `gl_FragColor=vec4(F*_a+vec3(${glsl(r)},${glsl(g)},${glsl(b)})*_r*(1.-_a),_a+_r*(1.-_a));`
+  )
+}
+
+type RGB = [number, number, number]
+
+function patchCanvasForTransparency(canvas: HTMLCanvasElement, rim: RGB, rimStrength: number) {
+  const sphereOut = transparentSphereOut(rim, rimStrength)
+  const original = canvas.getContext.bind(canvas) as (
+    id: string,
+    opts?: unknown
+  ) => RenderingContext | null
+  canvas.getContext = ((id: string, opts?: unknown) => {
+    const ctx = original(id, opts)
+    if (ctx && (id === "webgl" || id === "webgl2")) {
+      const gl = ctx as WebGLRenderingContext
+      const shaderSource = gl.shaderSource.bind(gl)
+      gl.shaderSource = (shader, src) =>
+        shaderSource(shader, src.replace(COBE_SPHERE_OUT, sphereOut))
+    }
+    return ctx
+  }) as HTMLCanvasElement["getContext"]
 }
 
 const defaultMarkers: CdnMarker[] = [
@@ -44,18 +82,28 @@ const defaultArcs: CdnArc[] = [
   { id: "cdn-arc-6", from: [49.01, 2.55], to: [19.09, 72.87] },
 ]
 
-export function GlobeCdn({
+export function GlobeCdnTransparent({
   markers = defaultMarkers,
   arcs = defaultArcs,
   className = "",
   speed = 0.003,
-}: GlobeCdnProps) {
+}: GlobeCdnTransparentProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null)
   const dragOffset = useRef({ phi: 0, theta: 0 })
   const phiOffsetRef = useRef(0)
   const thetaOffsetRef = useRef(0)
   const isPausedRef = useRef(false)
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== "undefined" && document.documentElement.dataset.theme === "dark"
+  )
+  // Re-tint the dots when the deck's theme toggles.
+  useEffect(() => {
+    const root = document.documentElement
+    const mo = new MutationObserver(() => setIsDark(root.dataset.theme === "dark"))
+    mo.observe(root, { attributes: true, attributeFilter: ["data-theme"] })
+    return () => mo.disconnect()
+  }, [])
   const [traffic, setTraffic] = useState(() =>
     defaultArcs.map((a, i) => ({ id: a.id, value: [420, 380, 290, 185, 156, 134][i] || 100 }))
   )
@@ -117,19 +165,24 @@ export function GlobeCdn({
       const width = canvas.offsetWidth
       if (width === 0 || globe) return
 
+      // Transparent sphere: only the fine land dots, a dark edge ring, arcs and markers are drawn.
+      // Dots are tinted with the theme's foreground so they read on light and dark slides.
+      const ink: RGB = isDark ? [0.88, 0.9, 0.95] : [0.12, 0.1, 0.11]
+      const rim: RGB = [0.04, 0.03, 0.035] // dark edge colour
+      patchCanvasForTransparency(canvas, rim, isDark ? 0.9 : 0.55)
       globe = createGlobe(canvas, {
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
       width, height: width,
-      phi: 0, theta: 0.2, dark: 0, diffuse: 1.5,
-      mapSamples: 16000, mapBrightness: 10,
-      baseColor: [1, 1, 1],
-      markerColor: [0, 0, 0],
-      glowColor: [0.94, 0.93, 0.91],
+      phi: 0, theta: 0.2, dark: 1, diffuse: 1.2,
+      mapSamples: 40000, mapBrightness: 1.6, mapBaseBrightness: 0,
+      baseColor: ink,
+      markerColor: ink,
+      glowColor: [0, 0, 0],
       markerElevation: 0.02,
-      markers: markers.map((m) => ({ location: m.location, size: 0.012, id: m.id })),
+      markers: markers.map((m) => ({ location: m.location, size: 0.01, id: m.id })),
       arcs: arcs.map((a) => ({ from: a.from, to: a.to, id: a.id })),
-      arcColor: [0, 0, 0],
-      arcWidth: 0.35, arcHeight: 0.25, opacity: 0.7,
+      arcColor: ink,
+      arcWidth: 0.3, arcHeight: 0.25, opacity: 0.85,
     })
     function animate() {
       if (!isPausedRef.current) phi += speed
@@ -159,7 +212,7 @@ export function GlobeCdn({
       if (animationId) cancelAnimationFrame(animationId)
       if (globe) globe.destroy()
     }
-  }, [markers, arcs, speed])
+  }, [markers, arcs, speed, isDark])
 
   const pyramidFaceStyle = (nth: number): React.CSSProperties => {
     const transforms = [
@@ -168,7 +221,7 @@ export function GlobeCdn({
       "rotateY(240deg) translateZ(4px) rotateX(19.5deg)",
       "rotateX(-90deg) rotateZ(60deg) translateY(4px)",
     ]
-    const colors = ["#111", "#333", "#555", "#222"]
+    const colors = ["#e5e7eb", "#9ca3af", "#f9fafb", "#6b7280"]
     return {
       position: "absolute", left: -0.5, top: 0,
       width: 0, height: 0,
@@ -225,10 +278,10 @@ export function GlobeCdn({
             ))}
           </div>
           <span style={{
-            fontFamily: "monospace", fontSize: "0.55rem", color: "#000",
-            background: "#fff", padding: "2px 6px", borderRadius: 3,
+            fontFamily: "monospace", fontSize: "0.55rem", color: "var(--fg)",
+            background: "var(--surface)", padding: "2px 6px", borderRadius: 3,
             letterSpacing: "0.05em", whiteSpace: "nowrap" as const,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+            border: "1px solid var(--border)",
           }}>{m.region}</span>
         </div>
       ))}
@@ -243,8 +296,8 @@ export function GlobeCdn({
             translate: "-50% 0",
             fontFamily: "monospace",
             fontSize: "0.5rem",
-            color: "#fff",
-            background: "#000",
+            color: "var(--bg)",
+            background: "var(--fg)",
             padding: "3px 8px",
             borderRadius: 4,
             whiteSpace: "nowrap" as const,
