@@ -16,24 +16,63 @@ type FeatureType = {
 	description: string;
 };
 
+// Deterministic filled cells for the corner grid, varied per card.
+function squaresFor(index: number): [number, number][] {
+	const sets: [number, number][][] = [
+		[
+			[1, 1],
+			[3, 0],
+			[4, 2],
+			[6, 1],
+		],
+		[
+			[0, 2],
+			[2, 1],
+			[5, 0],
+			[6, 2],
+		],
+		[
+			[1, 0],
+			[3, 2],
+			[5, 1],
+			[7, 0],
+		],
+	];
+	return sets[index % sets.length];
+}
+
+function DecorIcon({
+	position,
+	className,
+}: {
+	position: "top-left" | "bottom-right";
+	className?: string;
+}) {
+	const pos = position === "top-left" ? "-top-2 -left-2" : "-bottom-2 -right-2";
+	return (
+		<svg
+			viewBox="0 0 16 16"
+			fill="none"
+			aria-hidden
+			className={cn("absolute stroke-border", pos, className)}
+		>
+			<path d="M8 1v14M1 8h14" strokeWidth={1} />
+		</svg>
+	);
+}
+
 export function FeatureSection() {
 	return (
-		<div className="mx-auto w-full max-w-5xl space-y-8">
-			<div className="mx-auto max-w-3xl text-center">
+		<div className="mx-auto w-full h-full max-w-5xl flex flex-col justify-center space-y-8">
+			<div className="max-w-3xl">
 				<h2 className="font-heading text-balance font-medium text-2xl md:text-4xl lg:text-5xl">
-					Power. Speed. Control.
+					Current trends
 				</h2>
-				<p className="mt-4 text-balance text-muted-foreground text-sm md:text-base">
-					Everything you need to build fast, secure, scalable apps.
-				</p>
 			</div>
-
-			<div className="overflow-hidden rounded-lg border">
-				<div className="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 md:grid-cols-3">
-					{features.map((feature) => (
-						<FeatureCard feature={feature} key={feature.title} />
-					))}
-				</div>
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+				{features.map((feature, i) => (
+					<FeatureCard feature={feature} index={i} key={feature.title} />
+				))}
 			</div>
 		</div>
 	);
@@ -41,66 +80,96 @@ export function FeatureSection() {
 
 export function FeatureCard({
 	feature,
+	index = 0,
 	className,
 	...props
-}: React.ComponentProps<"div"> & {
-	feature: FeatureType;
-}) {
+}: React.ComponentProps<"div"> & { feature: FeatureType; index?: number }) {
 	return (
 		<div
-			className={cn("relative overflow-hidden bg-background p-6", className)}
+			className={cn(
+				"relative flex h-full flex-col gap-8 bg-background px-7 pt-8 pb-7",
+				"bg-[radial-gradient(60%_80%_at_20%_0%,color-mix(in_oklab,var(--accent)_8%,transparent),transparent)]",
+				className,
+			)}
 			{...props}
 		>
-			<div className="mask-[radial-gradient(farthest-side_at_top,white,transparent)] pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 size-full">
+			{/* Extended hairlines: neighbouring cards' lines cross into a blueprint grid */}
+			<div className="absolute -inset-y-4 -left-px w-px bg-border" />
+			<div className="absolute -inset-y-4 -right-px w-px bg-border" />
+			<div className="absolute -inset-x-4 -top-px h-px bg-border" />
+			<div className="absolute -inset-x-4 -bottom-px h-px bg-border" />
+
+			{/* Corner marks */}
+			<DecorIcon position="top-left" className="size-4" />
+			<DecorIcon position="bottom-right" className="size-4" />
+
+			{/* Masked grid in the top-right corner, with a few filled cells */}
+			<div className="pointer-events-none absolute top-0 right-0 h-36 w-52 max-w-full overflow-hidden mask-[radial-gradient(farthest-side_at_top_right,white,transparent)]">
 				<GridPattern
-					className="absolute inset-0 size-full stroke-foreground/20"
-					height={40}
-					width={40}
-					x={20}
+					width={24}
+					height={24}
+					x={-1}
+					y={-1}
+					squares={squaresFor(index)}
+					className="fill-accent/10 stroke-foreground/10"
 				/>
 			</div>
-			<div className="[&_svg]:size-6 [&_svg]:text-foreground/75">
-				{feature.icon}
+
+			<div className="relative z-10 flex items-start justify-between">
+				<div className="flex w-fit items-center justify-center rounded-xl border border-border bg-background/70 p-3 shadow-sm backdrop-blur-sm [&_svg]:size-6 [&_svg]:text-accent">
+					{feature.icon}
+				</div>
+				<span className="font-mono text-sm text-muted-foreground/70">
+					{String(index + 1).padStart(2, "0")}
+				</span>
 			</div>
-			<h3 className="font-heading mt-10 text-sm md:text-base">
-				{feature.title}
-			</h3>
-			<p className="relative z-20 mt-2 font-light text-muted-foreground text-xs">
-				{feature.description}
-			</p>
+
+			<div className="relative z-10 mt-auto space-y-2">
+				<h3 className="font-heading text-xl font-semibold leading-tight">
+					{feature.title}
+				</h3>
+				<p className="text-base leading-relaxed text-muted-foreground">
+					{feature.description}
+				</p>
+			</div>
 		</div>
 	);
 }
 
 const features: FeatureType[] = [
 	{
-		title: "Faaast",
+		title: "AI and GPUs",
 		icon: <ZapIcon />,
-		description: "It supports an entire helping developers and innovate.",
+		description:
+			"Meta has described clusters of 24,576 NVIDIA H100 GPUs for generative AI.",
 	},
 	{
-		title: "Powerful",
+		title: "Custom processors",
 		icon: <CpuIcon />,
-		description: "It supports an entire helping developers and businesses.",
+		description: "AWS Graviton, Trainium and Inferentia; Meta MTIA.",
 	},
 	{
-		title: "Security",
+		title: "Energy efficiency",
 		icon: <FingerprintIcon />,
-		description: "It supports an helping developers businesses.",
+		description:
+			"Efficient chips, advanced and liquid cooling, renewable energy.",
 	},
 	{
-		title: "Customization",
+		title: "Edge computing",
 		icon: <PencilIcon />,
-		description: "It supports helping developers and businesses innovate.",
+		description:
+			"Process data near its source: lower latency and network traffic.",
 	},
 	{
-		title: "Control",
+		title: "High-speed networking",
 		icon: <Settings2Icon />,
-		description: "It supports helping developers and businesses innovate.",
+		description:
+			"Ethernet, InfiniBand, RDMA and optical links. Meta’s October 2026 OCP news includes liquid-cooled network gear.",
 	},
 	{
-		title: "Built for AI",
+		title: "Disaggregation",
 		icon: <SparklesIcon />,
-		description: "It supports helping developers and businesses innovate.",
+		description:
+			"Separating compute, memory and storage so each can scale on its own.",
 	},
 ];
