@@ -15,7 +15,16 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function TitleSlide() {
 	return (
 		<div className="relative h-full w-full">
-			{/* Globe in the bottom-right corner, cropped by the window edges. */}
+			<motion.img
+				src="/Logo.jpg"
+				alt="University logo"
+				draggable={false}
+				className="absolute top-6 left-15 z-20 h-20 w-auto select-none object-contain"
+				initial={{ opacity: 0, y: -12 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.1, duration: 0.8, ease }}
+			/>
+
 			<motion.div
 				aria-hidden
 				className="pointer-events-none absolute -inset-x-(--bleed-x,0px) -inset-y-(--bleed-y,0px) overflow-hidden"
@@ -25,18 +34,15 @@ export default function TitleSlide() {
 			>
 				<div
 					data-no-nav
-					className="pointer-events-auto absolute -right-16 -bottom-46 w-3xl"
+					className="pointer-events-auto absolute -right-34 -bottom-45 w-3xl"
 				>
 					<GlobeCdn className="w-full" />
 				</div>
 			</motion.div>
 
-			{/* Title block */}
-			<header className="relative z-10 flex flex-col items-start pt-20 pl-15">
-				{/* Course name (kicker). The canvas is invisible to screen readers, so mirror it as text. */}
+			<header className="relative z-10 flex flex-col items-start pt-30 pl-10">
 				<p className="sr-only">Cloud &amp; Parallel Architectures</p>
-				{/* The canvas bleeds 24px left/right and 12px top/bottom so the dashed outlines and
-				    selection handles aren't clipped; `gutter` puts the letters back on the text edge. */}
+
 				<div
 					aria-hidden
 					className="relative -mx-6 -my-3 h-20 w-[calc(100%+3rem)] font-display"
@@ -72,7 +78,6 @@ export default function TitleSlide() {
 					/>
 				</div>
 
-				{/* Main title. Gradient text can't be split per letter, so it wipes in as a whole. */}
 				<h1 className="mt-1 font-display font-semibold tracking-tight">
 					<motion.span
 						className="block pb-1 text-4xl leading-[1.05] text-balance text-gradient md:text-6xl lg:text-7xl"
