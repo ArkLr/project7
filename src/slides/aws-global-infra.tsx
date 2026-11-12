@@ -57,13 +57,13 @@ export function AwsGlobalInfraSlide() {
 						<Step as="li" key={title} effect="fade-right" dim>
 							<div
 								className={cn(
-									"flex gap-4 rounded-xl border px-4 py-3 transition-colors duration-500",
+									"flex border-dashed border px-4 py-3 transition-colors duration-500",
 									phase === i + 1
 										? "border-accent/50 bg-surface shadow-soft"
 										: "border-border bg-surface/60",
 								)}
 							>
-								<Icon className="mt-0.5 size-6 shrink-0 text-accent" />
+								<Icon className="mt-0.5 pr-2 size-6 shrink-0 text-accent" />
 								<div>
 									<p className="flex items-baseline gap-3 font-display text-xl font-semibold">
 										{title}
@@ -82,9 +82,10 @@ export function AwsGlobalInfraSlide() {
 					<p className="absolute bottom-10 left-16 flex max-w-[468px] gap-2.5 bg-surface rounded-lg border border-dashed border-border px-3.5 py-2.5 text-sm leading-snug text-muted">
 						<Info className="mt-0.5 size-4 shrink-0 text-accent" />
 						<span>
-							<b className="font-semibold text-fg">Note:</b> AWS has no Region or data
-							centre in Algeria. The Region and AZs shown near Algiers are
-							hypothetical, only to illustrate how a Region is split into AZs.
+							<b className="font-semibold text-fg">Note:</b> AWS has no Region
+							or data centre in Algeria. The Region and AZs shown near Algiers
+							are hypothetical, only to illustrate how a Region is split into
+							AZs.
 						</span>
 					</p>
 				)}
