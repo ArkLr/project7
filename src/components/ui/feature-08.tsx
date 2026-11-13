@@ -65,19 +65,6 @@ const features: FeatureType[] = [
 	},
 ];
 
-/** Section tag: accent-tinted pill with a pulsing red dot. */
-function Tag({ children }: { children: React.ReactNode }) {
-	return (
-		<span className="tag-surface inline-flex w-fit items-center gap-2.5 rounded-full py-1.5 pr-4 pl-3 font-mono text-xs font-medium tracking-[0.14em] text-fg/80 uppercase">
-			<span className="relative flex size-2">
-				<span className="absolute inline-flex size-full rounded-full bg-accent opacity-50 motion-safe:animate-ping" />
-				<span className="relative inline-flex size-2 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-			</span>
-			{children}
-		</span>
-	);
-}
-
 export function FeatureSection() {
 	return (
 		<Slide layout="top" className="justify-center gap-6 py-12">

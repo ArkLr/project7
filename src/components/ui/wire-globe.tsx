@@ -91,13 +91,6 @@ export function WireGlobe({
 		// Stable pseudo-random specks (seeded so the overview thumbnail matches).
 		let seed = 7;
 		const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
-		const dots = Array.from({ length: specks }, () => ({
-			x: rand(),
-			y: rand() * 0.8,
-			r: 0.5 + rand() * 1.1,
-			phase: rand() * Math.PI * 2,
-			drift: (rand() - 0.5) * 0.004,
-		}));
 
 		// Stars riding the rings: which ring, where they start, how fast (rad/s, clockwise).
 		const stars = Array.from({ length: orbiters }, () => {

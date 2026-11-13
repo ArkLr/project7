@@ -1,6 +1,4 @@
-import { AlertTriangle, Leaf, Package, Wrench } from "lucide-react";
 import type { SlideEntry } from "./types";
-import { CardsSlide } from "./kit";
 import { FeatureSection } from "@/components/ui/feature-08";
 
 export const slides: SlideEntry[] = [
