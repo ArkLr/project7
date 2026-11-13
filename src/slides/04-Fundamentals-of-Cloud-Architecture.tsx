@@ -40,7 +40,7 @@ export const slides: SlideEntry[] = [
 					},
 					{
 						icon: Cloud,
-						title: "Services",
+						title: "Cloud Services",
 						text: "VMs, databases, object storage, web hosting, AI/ML.",
 					},
 				]}
