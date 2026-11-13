@@ -4,7 +4,6 @@ import { useDeckStore } from '@/store/deck'
 
 interface KeyboardNavOptions {
   onToggleFullscreen?: () => void
-  onToggleTheme?: () => void
 }
 
 function isEditable(target: EventTarget | null) {
@@ -35,7 +34,6 @@ export function useKeyboardNav(options: KeyboardNavOptions = {}) {
       let handled = true
 
       if (key === 'f') opts.current.onToggleFullscreen?.()
-      else if (key === 't') opts.current.onToggleTheme?.()
       else if (s.overview) {
         const cols = overviewColumns()
         switch (key) {

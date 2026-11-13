@@ -6,7 +6,6 @@ import { useFullscreen } from '@/hooks/useFullscreen'
 import { useSlides } from '@/hooks/useSlides'
 import { IconButton } from './IconButton'
 import { SlideCounter } from './SlideCounter'
-import { ThemeToggle } from './ThemeToggle'
 
 const vertical = deckConfig.orientation === 'vertical'
 const PrevIcon = vertical ? ChevronUp : ChevronLeft
@@ -44,7 +43,6 @@ export function Controls({ idle }: { idle: boolean }) {
         <IconButton label="Overview" shortcut="O" onClick={toggleOverview} className={overview ? 'text-accent' : undefined}>
           <LayoutGrid className="size-[18px]" />
         </IconButton>
-        <ThemeToggle />
         {supported && (
           <IconButton label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'} shortcut="F" onClick={toggle}>
             {isFullscreen ? <Minimize className="size-[18px]" /> : <Maximize className="size-[18px]" />}
