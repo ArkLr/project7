@@ -1,19 +1,21 @@
-import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentProps, ReactNode } from "react";
+import { Lightbulb, type LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal, Slide } from "@/components/deck";
 import { Card } from "@/components/ui/Card";
 import { Heading } from "@/components/ui/Heading";
 import { FeatureCard } from "@/components/ui/feature-section";
+import { DecorIcon } from "@/components/ui/decor-icon";
 import { Logo3D, type LogoKind } from "./logo3d";
+import { cn } from "@/lib/utils";
 
-/** Section tag with a green "active" dot. */
+/** Section tag: accent-tinted pill with a pulsing red dot. */
 function Tag({ children }: { children: ReactNode }) {
 	return (
-		<span className="inline-flex w-fit items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-sm text-muted">
+		<span className="tag-surface inline-flex w-fit items-center gap-2.5 rounded-full py-1.5 pr-4 pl-3 font-mono text-xs font-medium tracking-[0.14em] text-fg/80 uppercase">
 			<span className="relative flex size-2">
-				<span className="absolute inline-flex size-full rounded-full bg-green-500 opacity-60 motion-safe:animate-ping" />
-				<span className="relative inline-flex size-2 rounded-full bg-green-500" />
+				<span className="absolute inline-flex size-full rounded-full bg-accent opacity-50 motion-safe:animate-ping" />
+				<span className="relative inline-flex size-2 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
 			</span>
 			{children}
 		</span>
@@ -29,8 +31,6 @@ function Frame({ bg, children }: { bg?: LogoKind; children: ReactNode }) {
 		</div>
 	);
 }
-
-/** Reusable slide templates, sized for the 1280×720 canvas. */
 
 export function CardsSlide(p: {
 	title: string;
@@ -56,7 +56,6 @@ export function CardsSlide(p: {
 				>
 					{p.cards.map(({ icon: Icon, title, text }, i) => (
 						<Card key={title} className="h-full">
-							{/* Icon pops in, and spins when hovered */}
 							<motion.span
 								className="inline-block cursor-pointer"
 								initial={{ scale: 0, rotate: -60 }}
@@ -87,7 +86,7 @@ export function FeatureSlide(p: {
 	title: string;
 	tag?: string;
 	bg?: LogoKind;
-	cards: { icon: LucideIcon; title: string; text: string }[];
+	cards: { icon: LucideIcon; title: string; text: string; points?: string[] }[];
 	cols?: 2 | 3 | 4;
 	note?: string;
 }) {
@@ -187,7 +186,8 @@ export function ListSlide(p: {
 	bg?: LogoKind;
 	intro?: string;
 	items: string[];
-	aside?: { title: string; text: string };
+	/** Rendered as a dashed Note callout; `variant: "card"` uses the plain Card. */
+	aside?: { title: string; text: string; variant?: "card" | "note" };
 }) {
 	return (
 		<Frame bg={p.bg}>
@@ -212,16 +212,72 @@ export function ListSlide(p: {
 					</Reveal>
 					{p.aside && (
 						<Reveal each={false} effect="fade-left" delay={0.6}>
-							<Card>
-								<h3 className="text-xl font-semibold text-accent">
-									{p.aside.title}
-								</h3>
-								<p className="mt-2 text-lg text-muted">{p.aside.text}</p>
-							</Card>
+							{p.aside.variant !== "card" ? (
+								<Note title={p.aside.title}>{p.aside.text}</Note>
+							) : (
+								<Card>
+									<h3 className="text-xl font-semibold text-accent">
+										{p.aside.title}
+									</h3>
+									<p className="mt-2 text-lg text-muted">{p.aside.text}</p>
+								</Card>
+							)}
 						</Reveal>
 					)}
 				</div>
 			</Slide>
 		</Frame>
+	);
+}
+
+function DashedLine({ className, ...props }: ComponentProps<"div">) {
+	return (
+		<div
+			className={cn("absolute border border-dashed border-border", className)}
+			{...props}
+		/>
+	);
+}
+
+/** Blueprint-style callout: dashed frame with "+" corner marks. */
+export function Note({
+	title,
+	icon: Icon = Lightbulb,
+	children,
+	className,
+}: {
+	title?: string;
+	icon?: LucideIcon;
+	children: ReactNode;
+	className?: string;
+}) {
+	return (
+		<div className={cn("group relative bg-surface/60 p-7", className)}>
+			{(["top-left", "top-right", "bottom-left", "bottom-right"] as const).map(
+				(pos) => (
+					<DecorIcon
+						key={pos}
+						position={pos}
+						className="size-6 stroke-2 stroke-border transition-[stroke] duration-300 group-hover:stroke-accent"
+					/>
+				),
+			)}
+			<DashedLine className="-top-[1.5px] right-3 left-3" />
+			<DashedLine className="top-3 -right-[1.5px] bottom-3" />
+			<DashedLine className="top-3 bottom-3 -left-[1.5px]" />
+			<DashedLine className="right-3 -bottom-[1.5px] left-3" />
+
+			{title && (
+				<h3 className="flex items-center gap-2.5 text-xl font-semibold text-accent">
+					<Icon className="size-6" />
+					{title}
+				</h3>
+			)}
+			<div
+				className={cn("text-lg leading-relaxed text-muted", title && "mt-3")}
+			>
+				{children}
+			</div>
+		</div>
 	);
 }

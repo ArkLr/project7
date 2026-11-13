@@ -131,7 +131,7 @@ export const slides: SlideEntry[] = [
 						text: "Get the most output from the least resources, with minimal waste.",
 					},
 				]}
-				note="Cloud provides the resources; parallel computing uses them efficiently. Amazon and Meta depend on both."
+				note="Cloud provides the resources and parallel computing uses them efficiently. Amazon and Meta depend on both."
 			/>
 		),
 	},

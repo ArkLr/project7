@@ -48,7 +48,7 @@ export function AwsGlobalInfraSlide() {
 	const phase = Math.min(step, LAYERS.length) as GlobePhase;
 
 	return (
-		<Slide layout="split" className="grid-cols-[1fr_auto] gap-6 px-16 py-10">
+		<Slide layout="split" className="h-[720px] grid-cols-[1fr_auto] gap-8 overflow-hidden px-16 py-8">
 			<div className="flex flex-col gap-5">
 				<Heading gradient>AWS global infrastructure</Heading>
 
@@ -79,7 +79,7 @@ export function AwsGlobalInfraSlide() {
 				</ol>
 
 				{phase === 2 && (
-					<p className="absolute bottom-10 left-16 flex max-w-[468px] gap-2.5 bg-surface rounded-lg border border-dashed border-border px-3.5 py-2.5 text-sm leading-snug text-muted">
+					<p className="absolute bottom-8 left-16 flex max-w-[500px] gap-2.5 bg-surface rounded-lg border border-dashed border-border px-3.5 py-2.5 text-sm leading-snug text-muted">
 						<Info className="mt-0.5 size-4 shrink-0 text-accent" />
 						<span>
 							<b className="font-semibold text-fg">Note:</b> AWS has no Region
@@ -91,13 +91,13 @@ export function AwsGlobalInfraSlide() {
 				)}
 
 				{phase === 0 && (
-					<p className="absolute bottom-10 left-16 font-mono text-sm text-muted">
+					<p className="absolute bottom-8 left-16 font-mono text-sm text-muted">
 						Each dot is an AWS Region
 					</p>
 				)}
 			</div>
 
-			<AwsInfraGlobe phase={phase} size={660} still={mode === "thumbnail"} />
+			<AwsInfraGlobe phase={phase} size={600} still={mode === "thumbnail"} />
 		</Slide>
 	);
 }

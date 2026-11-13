@@ -9,20 +9,17 @@ export type Feature = {
 	icon: LucideIcon;
 	title: string;
 	text: string;
+	/** Optional bullet points shown under the description. */
+	points?: string[];
 };
 
-/**
- * Blueprint-style feature card: hairline borders that run past the card,
- * "+" corner marks, a masked grid in the corner and an accent glow that
- * follows the cursor. Uses the deck's theme tokens so it works in light and dark.
- */
 export function FeatureCard({
 	feature,
 	index = 0,
 	className,
 	...props
 }: React.ComponentProps<"div"> & { feature: Feature; index?: number }) {
-	const { icon: Icon, title, text } = feature;
+	const { icon: Icon, title, text, points } = feature;
 
 	const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		const r = e.currentTarget.getBoundingClientRect();
@@ -93,7 +90,7 @@ export function FeatureCard({
 				>
 					<Icon className="size-6 text-accent" strokeWidth={1.6} />
 				</motion.div>
-				<span className="font-mono text-sm text-muted/70 transition-colors duration-300 group-hover:text-accent">
+				<span className="text-sm text-muted/70 transition-colors duration-300 group-hover:text-accent">
 					{String(index + 1).padStart(2, "0")}
 				</span>
 			</div>
@@ -103,10 +100,20 @@ export function FeatureCard({
 					{title}
 				</h3>
 				<p className="text-base leading-relaxed text-muted">{text}</p>
+				{points && points.length > 0 && (
+					<ul className="space-y-1.5 pt-2 text-base text-muted">
+						{points.map((pt) => (
+							<li key={pt} className="flex gap-2.5">
+								<span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" />
+								{pt}
+							</li>
+						))}
+					</ul>
+				)}
 			</div>
 
 			{/* Accent underline that grows on hover */}
-			<span className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-accent to-accent-2 transition-transform duration-500 group-hover:scale-x-100" />
+			<span className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-linear-to-r from-accent to-accent-2 transition-transform duration-500 group-hover:scale-x-100" />
 		</div>
 	);
 }

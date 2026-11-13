@@ -81,12 +81,22 @@ export const slides: SlideEntry[] = [
 					{
 						icon: Cpu,
 						title: "Graviton processors",
-						text: "Arm-based chips designed by Amazon: energy efficiency, tuned performance, tight integration with AWS.",
+						text: "Amazon designs its own Arm-based server chips to get more performance per dollar and per watt.",
+						points: [
+							"Better price-performance than comparable x86 instances",
+							"Uses less energy for the same work, lowering cost and carbon",
+							"Chip and AWS software are designed together, so they are tuned as one",
+						],
 					},
 					{
 						icon: Zap,
 						title: "Nitro System",
-						text: "Dedicated hardware and software for virtualization, networking, storage and security, freeing the main CPU for customer workloads.",
+						text: "AWS moves virtualization, networking, storage and security onto dedicated hardware, so the host CPU and memory go almost entirely to customer workloads.",
+						points: [
+							"Nitro Cards handle network (VPC) and storage (EBS) traffic",
+							"A lightweight hypervisor gives near bare-metal performance",
+							"The Nitro Security Chip keeps hardware and firmware locked down",
+						],
 					},
 				]}
 			/>

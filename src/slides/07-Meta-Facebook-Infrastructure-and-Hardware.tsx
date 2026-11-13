@@ -31,17 +31,17 @@ export const slides: SlideEntry[] = [
 					{
 						icon: Server,
 						title: "Servers",
-						text: "Stripped-down sleds with only the parts a workload needs. No paint, no extra ports, easy to repair.",
+						text: "Stripped down to only the parts the workload needs: no paint, no extra ports, easy to repair.",
 					},
 					{
 						icon: HardDrive,
 						title: "Storage",
-						text: "Dense trays packed with drives for photos, videos and backups, sitting behind cheap compute.",
+						text: "Dense chassis packed with dozens of drives for photos, videos and backups, paired with low-cost compute.",
 					},
 					{
 						icon: Router,
 						title: "Network",
-						text: "Meta's own switches (Wedge, Minipack) running its own software (FBOSS) instead of closed vendor boxes.",
+						text: "In-house switches (Wedge, Minipack) running Meta's own Linux-based FBOSS: cheaper to scale, faster to update.",
 					},
 					{
 						icon: Wind,

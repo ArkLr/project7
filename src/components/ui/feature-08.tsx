@@ -59,19 +59,19 @@ const features: FeatureType[] = [
 	},
 	{
 		icon: HardDrive,
-		title: "Disaggregation",
+		title: "Independent Scaling",
 		description:
 			"Separating compute, memory and storage so each can scale on its own.",
 	},
 ];
 
-/** Section tag with a green "active" dot. */
+/** Section tag: accent-tinted pill with a pulsing red dot. */
 function Tag({ children }: { children: React.ReactNode }) {
 	return (
-		<span className="inline-flex w-fit items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-sm text-muted">
+		<span className="tag-surface inline-flex w-fit items-center gap-2.5 rounded-full py-1.5 pr-4 pl-3 font-mono text-xs font-medium tracking-[0.14em] text-fg/80 uppercase">
 			<span className="relative flex size-2">
-				<span className="absolute inline-flex size-full rounded-full bg-green-500 opacity-60 motion-safe:animate-ping" />
-				<span className="relative inline-flex size-2 rounded-full bg-green-500" />
+				<span className="absolute inline-flex size-full rounded-full bg-accent opacity-50 motion-safe:animate-ping" />
+				<span className="relative inline-flex size-2 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
 			</span>
 			{children}
 		</span>
