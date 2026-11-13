@@ -9,7 +9,7 @@ import {
 	Boxes,
 } from "lucide-react";
 import type { SlideEntry } from "./types";
-import { CardsSlide, FeatureSlide, TableSlide } from "./kit";
+import { CardsSlide, FeatureSlide } from "./kit";
 import { MetaRequestPathSlide } from "./meta-infra";
 
 export const slides: SlideEntry[] = [

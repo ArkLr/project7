@@ -1,6 +1,5 @@
-import { Database, Network, Zap } from "lucide-react";
 import type { SlideEntry } from "./types";
-import { CardsSlide, TableSlide } from "./kit";
+import { TableSlide } from "./kit";
 
 export const slides: SlideEntry[] = [
 	// {
