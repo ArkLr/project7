@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 
 /** Worldwide cloud infrastructure market share (Synergy Research Group, Q2 2025). */
 const chartData = [
-	{ label: "AWS", value: 26, color: "var(--accent)" },
-	{ label: "Microsoft", value: 19, color: "var(--accent-2)" },
+	{ label: "Amazon (AWS)", value: 26, color: "var(--accent)" },
+	{ label: "Microsoft (Azure)", value: 19, color: "var(--accent-2)" },
 	{
-		label: "Google Cloud",
+		label: "Google (Google Cloud)",
 		value: 16,
 		color: "color-mix(in oklab, var(--accent) 45%, var(--bg))",
 	},
