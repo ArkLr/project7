@@ -78,7 +78,7 @@ export const ChartPieCenter = ({ className }: { className?: string }) => (
 				{({ value, label, isHovered }) => (
 					<div className="flex flex-col items-center leading-none">
 						<span className="font-display text-lg font-semibold text-fg tabular-nums">
-							{isHovered ? `${value}%` : "30%"}
+							{isHovered ? `${value}%` : "26%"}
 						</span>
 						<span className="mt-1 text-[10px] text-muted">
 							{isHovered ? label : "AWS"}
